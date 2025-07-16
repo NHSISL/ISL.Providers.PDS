@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Title>ISL.Providers.PDS.Abstractions</Title>
+		<Product>ISL.Providers.PDS.Abstractions</Product>
+		<PackageId>ISL.Providers.PDS.Abstractions</PackageId>
+		<Authors>North East London ICB</Authors>
+		<Company>North East London ICB</Company>
+		<Description>
+			ISL.Providers.PDS.Abstractions provides an abstraction for the Patient Demographics Service.
+		</Description>
+		<Copyright>North East London ICB - 2024 (c)</Copyright>
+		<PackageIcon>pds.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/NHSISL/ISL.Providers.PDS</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/NHSISL/ISL.Providers.PDS</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>NHSISL; PDS; Provider; Abstractions; .NET; The Standard; Standard;</PackageTags>
+		<PackageReleaseNotes>
+			Initial release of ISL.Providers.PDS.Abstractions.
+		</PackageReleaseNotes>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<Version>0.0.0.1</Version>
+		<AssemblyVersion>0.0.0.1</AssemblyVersion>
+		<FileVersion>0.0.0.1</FileVersion>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>License.txt</PackageLicenseFile>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<NoWarn>CS1998</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>true</Pack>
+			<PackagePath></PackagePath>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="..\License.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\Resources\Images\pds.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Xeption" Version="2.8.0" />
+	</ItemGroup>
+
+</Project>

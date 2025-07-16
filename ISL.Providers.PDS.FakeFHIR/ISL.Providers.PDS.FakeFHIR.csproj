@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<Title>ISL.Providers.PDS.FHIR</Title>
+		<Product>ISL.Providers.PDS.FHIR</Product>
+		<PackageId>ISL.Providers.PDS.FHIR</PackageId>
+		<Authors>North East London ICB</Authors>
+		<Company>North East London ICB</Company>
+		<Description>ISL.Providers.PDS.FHIR provides a fake implementation the PDS FHIR Api for testing purposes.</Description>
+		<Copyright>North East London ICB - 2024 (c)</Copyright>
+		<PackageIcon>pds.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/NHSISL/ISL.Providers.PDS</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/NHSISL/ISL.Providers.PDS</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>NHSISL; PDS; Provider; .NET; The Standard; Standard;</PackageTags>
+		<PackageReleaseNotes>
+			Initial release of ISL.Providers.PDS.FakeFHIR
+			This provider is an implementation that will provide fake responses based config for testing purposes.
+		</PackageReleaseNotes>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<Version>0.0.0.1</Version>
+		<AssemblyVersion>0.0.0.1</AssemblyVersion>
+		<FileVersion>0.0.0.1</FileVersion>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>License.txt</PackageLicenseFile>
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<NoWarn>CS1998</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>true</Pack>
+			<PackagePath></PackagePath>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Include="..\License.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+		<None Include="..\Resources\Images\pds.png">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="ISL.Providers.PDS.FHIR.Tests.Unit" />
+		<InternalsVisibleTo Include="ISL.Providers.PDS.FHIR.Tests.Acceptance" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentAssertions" Version="7.2.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+		<PackageReference Include="RESTFulSense" Version="3.2.0" />
+		<PackageReference Include="Xeption" Version="2.8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ISL.Providers.PDS.Abstractions\ISL.Providers.PDS.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>
