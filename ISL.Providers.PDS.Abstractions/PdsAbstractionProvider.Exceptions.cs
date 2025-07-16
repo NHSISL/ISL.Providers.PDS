@@ -88,7 +88,7 @@ namespace ISL.Providers.PDS.Abstractions
             Exception exception)
         {
             var notificationServiceProviderException = new PdsProviderServiceException(
-                message: "Uncatagorized Pds service error occurred, contact support.",
+                message: "Uncatagorized pds service error occurred, contact support.",
                 innerException: exception as Xeption,
                 data: exception.Data);
 

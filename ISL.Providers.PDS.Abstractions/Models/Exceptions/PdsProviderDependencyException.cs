@@ -7,7 +7,7 @@ using Xeptions;
 
 namespace ISL.Providers.PDS.Abstractions.Models.Exceptions
 {
-    class PdsProviderDependencyException : Xeption
+    public class PdsProviderDependencyException : Xeption
     {
         public PdsProviderDependencyException(string message, Xeption innerException)
         : base(message, innerException)
