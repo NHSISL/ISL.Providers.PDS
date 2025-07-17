@@ -32,13 +32,13 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()))
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()))
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsRequest> patientLookupTask =
+            ValueTask<PdsResponse> patientLookupTask =
                 this.pdsAbstractionProvider
-                    .PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>());
+                    .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
             PdsProviderValidationException actualPdsValidationProviderException =
                 await Assert.ThrowsAsync<PdsProviderValidationException>(testCode: patientLookupTask.AsTask);
@@ -48,7 +48,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                 expectedPdsValidationProviderException);
 
             this.pdsMock.Verify(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()),
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()),
                     Times.Once);
 
             this.pdsMock.VerifyNoOtherCalls();
@@ -72,13 +72,13 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()))
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()))
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsRequest> patientLookupTask =
+            ValueTask<PdsResponse> patientLookupTask =
                 this.pdsAbstractionProvider
-                    .PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>());
+                    .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
             PdsProviderValidationException actualPdsValidationProviderException =
                 await Assert.ThrowsAsync<PdsProviderValidationException>(testCode: patientLookupTask.AsTask);
@@ -88,7 +88,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                 expectedPdsValidationProviderException);
 
             this.pdsMock.Verify(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()),
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()),
                     Times.Once);
 
             this.pdsMock.VerifyNoOtherCalls();
@@ -111,13 +111,13 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()))
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()))
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsRequest> patientLookupTask =
+            ValueTask<PdsResponse> patientLookupTask =
                 this.pdsAbstractionProvider
-                    .PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>());
+                    .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
             PdsProviderDependencyException actualPdsDependencyProviderException =
                 await Assert.ThrowsAsync<PdsProviderDependencyException>(testCode: patientLookupTask.AsTask);
@@ -127,7 +127,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                 expectedPdsDependencyProviderException);
 
             this.pdsMock.Verify(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()),
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()),
                     Times.Once);
 
             this.pdsMock.VerifyNoOtherCalls();
@@ -150,13 +150,13 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()))
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()))
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsRequest> patientLookupTask =
+            ValueTask<PdsResponse> patientLookupTask =
                 this.pdsAbstractionProvider
-                    .PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>());
+                    .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
             PdsProviderServiceException actualPdsServiceProviderException =
                 await Assert.ThrowsAsync<PdsProviderServiceException>(testCode: patientLookupTask.AsTask);
@@ -166,7 +166,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                 expectedPdsServiceProviderException);
 
             this.pdsMock.Verify(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()),
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()),
                     Times.Once);
 
             this.pdsMock.VerifyNoOtherCalls();
@@ -191,13 +191,13 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     innerException: uncatagorizedPdsProviderException);
 
             this.pdsMock.Setup(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()))
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()))
                     .ThrowsAsync(someException);
 
             // when
-            ValueTask<PdsRequest> patientLookupTask =
+            ValueTask<PdsResponse> patientLookupTask =
                 this.pdsAbstractionProvider
-                    .PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>());
+                    .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
             PdsProviderServiceException actualPdsServiceProviderException =
                 await Assert.ThrowsAsync<PdsProviderServiceException>(testCode: patientLookupTask.AsTask);
@@ -207,7 +207,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                 expectedPdsServiceProviderException);
 
             this.pdsMock.Verify(provider =>
-                provider.PatientLookupByNhsNumberAsync(It.IsAny<PdsRequest>()),
+                provider.PatientLookupByNhsNumberAsync(It.IsAny<string>()),
                     Times.Once);
 
             this.pdsMock.VerifyNoOtherCalls();

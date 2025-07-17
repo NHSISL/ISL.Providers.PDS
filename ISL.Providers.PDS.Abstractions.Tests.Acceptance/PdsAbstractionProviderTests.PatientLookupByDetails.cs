@@ -6,6 +6,7 @@ using FluentAssertions;
 using Force.DeepCloner;
 using ISL.Providers.PDS.Abstractions.Models;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,22 +18,26 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
         public async Task ShouldPatientLookupByDetailsAsync()
         {
             // given
-            PdsRequest randomInputPdsRequest = CreateRandomPdsRequest();
-            PdsRequest inputPdsRequest = randomInputPdsRequest.DeepClone();
-            PdsRequest randomOutputPdsRequest = CreateRandomPdsRequest();
-            PdsRequest outputPdsRequest = randomOutputPdsRequest.DeepClone();
-            PdsRequest expectedPdsRequest = outputPdsRequest.DeepClone();
+            string randomInputSurname = GetRandomString();
+            string inputSurname = randomInputSurname.DeepClone();
+            string randomInputPostcode = GetRandomString();
+            string inputPostcode = randomInputSurname.DeepClone();
+            DateTimeOffset randomInputDateOfBirth = GetRandomDateTimeOffset();
+            DateTimeOffset inputDateOfBirth = randomInputDateOfBirth.DeepClone();
+            PdsResponse randomOutputPdsResponse = CreateRandomPdsResponse();
+            PdsResponse outputPdsResponse = randomOutputPdsResponse.DeepClone();
+            PdsResponse expectedPdsResponse = outputPdsResponse.DeepClone();
 
             this.pdsProviderMock.Setup(provider =>
-                provider.PatientLookupByDetailsAsync(inputPdsRequest))
-                    .ReturnsAsync(outputPdsRequest);
+                provider.PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth))
+                    .ReturnsAsync(outputPdsResponse);
 
             // when
-            PdsRequest actualPdsRequest =
-                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(inputPdsRequest);
+            PdsResponse actualPdsResponse =
+                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth);
 
             // then
-            actualPdsRequest.Should().BeEquivalentTo(expectedPdsRequest);
+            actualPdsResponse.Should().BeEquivalentTo(expectedPdsResponse);
         }
     }
 }

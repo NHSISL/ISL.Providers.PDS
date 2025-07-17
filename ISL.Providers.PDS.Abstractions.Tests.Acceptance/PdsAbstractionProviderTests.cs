@@ -5,6 +5,7 @@
 using ISL.Providers.PDS.Abstractions.Models;
 using Microsoft.Extensions.Configuration;
 using Moq;
+using System;
 using Tynamix.ObjectFiller;
 
 namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
@@ -29,13 +30,27 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
                 new PdsAbstractionProvider(pdsProviderMock.Object);
         }
 
-        private static PdsRequest CreateRandomPdsRequest() =>
-            CreateRandomPdsRequestFiller().Create();
-
-        private static Filler<PdsRequest> CreateRandomPdsRequestFiller()
+        private static string GetRandomString()
         {
-            var filler = new Filler<PdsRequest>();
-            filler.Setup();
+            int length = GetRandomNumber();
+
+            return new MnemonicString(wordCount: 1, wordMinLength: length, wordMaxLength: length).GetValue();
+        }
+
+        private static int GetRandomNumber() =>
+            new IntRange(min: 2, max: 10).GetValue();
+
+        private static DateTimeOffset GetRandomDateTimeOffset() =>
+            new DateTimeRange(earliestDate: new DateTime()).GetValue();
+
+        private static PdsResponse CreateRandomPdsResponse() =>
+            CreateRandomPdsResponseFiller(dateTimeOffset: GetRandomDateTimeOffset()).Create();
+
+        private static Filler<PdsResponse> CreateRandomPdsResponseFiller(DateTimeOffset dateTimeOffset)
+        {
+            var filler = new Filler<PdsResponse>();
+            filler.Setup()
+                .OnType<DateTimeOffset>().Use(dateTimeOffset);
 
             return filler;
         }

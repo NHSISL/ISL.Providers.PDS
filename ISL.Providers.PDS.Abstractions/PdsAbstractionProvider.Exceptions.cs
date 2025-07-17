@@ -12,9 +12,9 @@ namespace ISL.Providers.PDS.Abstractions
 {
     public partial class PdsAbstractionProvider
     {
-        private delegate ValueTask<PdsRequest> ReturningPdsRequestFunction();
+        private delegate ValueTask<PdsResponse> ReturningPdsRequestFunction();
 
-        private async ValueTask<PdsRequest> TryCatch(
+        private async ValueTask<PdsResponse> TryCatch(
             ReturningPdsRequestFunction returningPdsRequestFunction)
         {
             try
