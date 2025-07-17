@@ -1,0 +1,217 @@
+﻿// ---------------------------------------------------------
+// Copyright (c) North East London ICB. All rights reserved.
+// ---------------------------------------------------------
+
+using FluentAssertions;
+using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.Abstractions.Models.Exceptions;
+using ISL.Providers.PDS.Abstractions.Tests.Unit.Models.Exceptions;
+using Moq;
+using System;
+using System.Threading.Tasks;
+using Xeptions;
+
+namespace ISL.Providers.PDS.Abstractions.Tests.Unit
+{
+    public partial class PdsAbstractionTests
+    {
+        [Fact]
+        public async Task ShouldThrowValidationExceptionWhenTypeIPdsValidationExceptionOnLookupByDetails()
+        {
+            // given
+            var someException = new Xeption();
+
+            var somePdsValidationException =
+                new SomePdsValidationException(
+                    message: "Some pds validation exception occurred",
+                    innerException: someException,
+                    data: someException.Data);
+
+            PdsProviderValidationException expectedPdsValidationProviderException =
+                new PdsProviderValidationException(
+                    message: "Pds validation errors occurred, please try again.",
+                    innerException: somePdsValidationException);
+
+            this.pdsMock.Setup(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
+                    .ThrowsAsync(somePdsValidationException);
+
+            // when
+            ValueTask<PdsResponse> patientLookupTask =
+                this.pdsAbstractionProvider
+                    .PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>());
+
+            PdsProviderValidationException actualPdsValidationProviderException =
+                await Assert.ThrowsAsync<PdsProviderValidationException>(testCode: patientLookupTask.AsTask);
+
+            // then
+            actualPdsValidationProviderException.Should().BeEquivalentTo(
+                expectedPdsValidationProviderException);
+
+            this.pdsMock.Verify(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()),
+                    Times.Once);
+
+            this.pdsMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyValidationExceptionWhenTypeIPdsDependencyValidationExceptionOnLookupByDetails()
+        {
+            // given
+            var someException = new Xeption();
+
+            var somePdsValidationException =
+                new SomePdsDependencyValidationException(
+                    message: "Some pds dependency validation exception occurred",
+                    innerException: someException,
+                    data: someException.Data);
+
+            PdsProviderValidationException expectedPdsValidationProviderException =
+                new PdsProviderValidationException(
+                    message: "Pds validation errors occurred, please try again.",
+                    innerException: somePdsValidationException);
+
+            this.pdsMock.Setup(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
+                    .ThrowsAsync(somePdsValidationException);
+
+            // when
+            ValueTask<PdsResponse> patientLookupTask =
+                this.pdsAbstractionProvider
+                    .PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>());
+
+            PdsProviderValidationException actualPdsValidationProviderException =
+                await Assert.ThrowsAsync<PdsProviderValidationException>(testCode: patientLookupTask.AsTask);
+
+            // then
+            actualPdsValidationProviderException.Should().BeEquivalentTo(
+                expectedPdsValidationProviderException);
+
+            this.pdsMock.Verify(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()),
+                    Times.Once);
+
+            this.pdsMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionWhenTypeIPdsDependencyExceptionOnLookupByDetails()
+        {
+            // given
+            var someException = new Xeption();
+
+            var somePdsValidationException =
+                new SomePdsDependencyException(
+                    message: "Some pds dependency exception occurred",
+                    innerException: someException);
+
+            PdsProviderDependencyException expectedPdsDependencyProviderException =
+                new PdsProviderDependencyException(
+                    message: "Pds dependency error occurred, contact support.",
+                    innerException: somePdsValidationException);
+
+            this.pdsMock.Setup(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
+                    .ThrowsAsync(somePdsValidationException);
+
+            // when
+            ValueTask<PdsResponse> patientLookupTask =
+                this.pdsAbstractionProvider
+                    .PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>());
+
+            PdsProviderDependencyException actualPdsDependencyProviderException =
+                await Assert.ThrowsAsync<PdsProviderDependencyException>(testCode: patientLookupTask.AsTask);
+
+            // then
+            actualPdsDependencyProviderException.Should().BeEquivalentTo(
+                expectedPdsDependencyProviderException);
+
+            this.pdsMock.Verify(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()),
+                    Times.Once);
+
+            this.pdsMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionWhenTypeIPdsServiceExceptionOnLookupByDetails()
+        {
+            // given
+            var someException = new Xeption();
+
+            var somePdsValidationException =
+                new SomePdsServiceException(
+                    message: "Some pds service exception occurred",
+                    innerException: someException);
+
+            PdsProviderServiceException expectedPdsServiceProviderException =
+                new PdsProviderServiceException(
+                    message: "Pds service error occurred, contact support.",
+                    innerException: somePdsValidationException);
+
+            this.pdsMock.Setup(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
+                    .ThrowsAsync(somePdsValidationException);
+
+            // when
+            ValueTask<PdsResponse> patientLookupTask =
+                this.pdsAbstractionProvider
+                    .PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>());
+
+            PdsProviderServiceException actualPdsServiceProviderException =
+                await Assert.ThrowsAsync<PdsProviderServiceException>(testCode: patientLookupTask.AsTask);
+
+            // then
+            actualPdsServiceProviderException.Should().BeEquivalentTo(
+                expectedPdsServiceProviderException);
+
+            this.pdsMock.Verify(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()),
+                    Times.Once);
+
+            this.pdsMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowUncatagorizedServiceExceptionWhenTypeIsNotExpectedOnLookupByDetails()
+        {
+            // given
+            var someException = new Xeption();
+
+            var uncatagorizedPdsProviderException =
+                new UncatagorizedPdsProviderException(
+                    message: "Pds provider not properly implemented. Uncatagorized errors found, " +
+                            "contact the pds provider owner for support.",
+                    innerException: someException,
+                    data: someException.Data);
+
+            PdsProviderServiceException expectedPdsServiceProviderException =
+                new PdsProviderServiceException(
+                    message: "Uncatagorized pds service error occurred, contact support.",
+                    innerException: uncatagorizedPdsProviderException);
+
+            this.pdsMock.Setup(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()))
+                    .ThrowsAsync(someException);
+
+            // when
+            ValueTask<PdsResponse> patientLookupTask =
+                this.pdsAbstractionProvider
+                    .PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>());
+
+            PdsProviderServiceException actualPdsServiceProviderException =
+                await Assert.ThrowsAsync<PdsProviderServiceException>(testCode: patientLookupTask.AsTask);
+
+            // then
+            actualPdsServiceProviderException.Should().BeEquivalentTo(
+                expectedPdsServiceProviderException);
+
+            this.pdsMock.Verify(provider =>
+                provider.PatientLookupByDetailsAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTimeOffset>()),
+                    Times.Once);
+
+            this.pdsMock.VerifyNoOtherCalls();
+        }
+    }
+}
