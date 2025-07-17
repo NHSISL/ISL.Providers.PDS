@@ -38,7 +38,7 @@ namespace ISL.Providers.PDS.Abstractions
         /// </summary>
         /// <returns>
         /// A PDS response where the name, DOB, Postcode and contact information are populated.
-        /// If the PDS search could not happen due to search parameters being invalid, the Nhs Number will be
+        /// If the PDS search could not happen due to search parameters being invalid
         /// DOB, Postcode and contact information will be empty.
         /// </returns>
         /// <exception cref="PdsValidationProviderException" />
