@@ -11,6 +11,7 @@ using ISL.Providers.PDS.FakeFHIR.Brokers.FakeFHIR;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using ISL.Providers.PDS.FakeFHIR.Models.Providers.Exceptions;
+using ISL.Providers.PDS.FakeFHIR.Brokers.Identifiers;
 
 namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
 {
@@ -147,6 +148,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
         private static IServiceProvider RegisterServices()
         {
             var serviceCollection = new ServiceCollection()
+                .AddTransient<IIdentifierBroker, IdentifierBroker>()
                 .AddTransient<IFakeFHIRBroker, FakeFHIRBroker>()
                 .AddTransient<IPdsService, PdsService>();
 
