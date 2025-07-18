@@ -18,7 +18,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
     {
         private readonly Mock<IFakeFHIRBroker> fakeFHIRBrokerMock;
         private readonly Mock<IIdentifierBroker> identifierBrokerMock;
-        private readonly IPdsService reIdentificationService;
+        private readonly IPdsService pdsService;
         private readonly ICompareLogic compareLogic;
 
         public PdsServiceTests()
@@ -26,7 +26,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             this.fakeFHIRBrokerMock = new Mock<IFakeFHIRBroker>();
             this.identifierBrokerMock = new Mock<IIdentifierBroker>();
             this.compareLogic = new CompareLogic();
-            this.reIdentificationService = new PdsService(
+            this.pdsService = new PdsService(
                 fakeFHIRBroker: fakeFHIRBrokerMock.Object,
                 identifierBroker: this.identifierBrokerMock.Object);
         }
@@ -44,15 +44,16 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         private static int GetRandomNumber() =>
             new IntRange(max: 15, min: 2).GetValue();
 
-        private static string GetRandomStringWithLengthOf(int length)
-        {
-            string result = new MnemonicString(wordCount: 1, wordMinLength: length, wordMaxLength: length).GetValue();
-
-            return result.Length > length ? result.Substring(0, length) : result;
-        }
-
         private static DateTimeOffset GetRandomDateTimeOffset() =>
             new DateTimeRange(earliestDate: new DateTime()).GetValue();
+
+        private static string GenerateRandom10DigitNumber()
+        {
+            Random random = new Random();
+            var randomNumber = random.Next(1000000000, 2000000000).ToString();
+
+            return randomNumber;
+        }
 
         private static PdsResponse CreateRandomPdsResponse(
             Guid responseId,

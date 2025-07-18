@@ -23,7 +23,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             string inputPostcode = randomString.DeepClone();
             DateTimeOffset randomDateTime = GetRandomDateTimeOffset();
             DateTimeOffset inputDateOfBirth = randomDateTime.DeepClone();
-            string randomOutputString = GetRandomStringWithLengthOf(10);
+            string randomOutputString = GenerateRandom10DigitNumber();
             string outputNhsNumber = randomOutputString.DeepClone();
 
             PdsResponse randomPdsResponse = CreateRandomPdsResponse(
@@ -45,7 +45,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
                     .ReturnsAsync(outputNhsNumber);
 
             // when
-            PdsResponse actualResponse = await this.reIdentificationService
+            PdsResponse actualResponse = await this.pdsService
                 .PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth);
 
             // then

@@ -19,7 +19,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         {
             // given
             Guid randomIdentifier = Guid.NewGuid();
-            string randomInputString = GetRandomStringWithLengthOf(10);
+            string randomInputString = GenerateRandom10DigitNumber();
             string inputNhsNumber = randomInputString.DeepClone();
             PdsPatientDetails randomPdsPatientDetails = CreateRandomPdsPatientDetails();
             PdsPatientDetails outputPdsPatientDetails = randomPdsPatientDetails.DeepClone();
@@ -41,7 +41,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
                     .ReturnsAsync(outputPdsPatientDetails);
 
             // when
-            PdsResponse actualResponse = await this.reIdentificationService
+            PdsResponse actualResponse = await this.pdsService
                 .PatientLookupByNhsNumberAsync(inputNhsNumber);
 
             // then

@@ -28,7 +28,7 @@ namespace ISL.Providers.PDS.Infrastructure.Services
                 {
                     Push = new PushEvent { Branches = [branchName] },
 
-                    PullResponse = new PullResponseEvent
+                    PullRequest = new PullRequestEvent
                     {
                         Types = ["opened", "synchronize", "reopened", "closed"],
                         Branches = [branchName]
@@ -159,7 +159,7 @@ namespace ISL.Providers.PDS.Infrastructure.Services
 
                 OnEvents = new Events
                 {
-                    PullResponse = new PullResponseEvent
+                    PullRequest = new PullRequestEvent
                     {
                         Types = ["opened", "edited", "synchronize", "reopened", "closed"],
                         Branches = [branchName]
