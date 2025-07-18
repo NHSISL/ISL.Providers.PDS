@@ -50,11 +50,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         private async ValueTask<PdsServiceException> CreateAndLogServiceExceptionAsync(
            Xeption exception)
         {
-            var reIdentificationServiceException = new PdsServiceException(
+            var pdsServiceException = new PdsServiceException(
                 message: "Pds service error occurred, please contact support.",
                 innerException: exception);
 
-            return reIdentificationServiceException;
+            return pdsServiceException;
         }
     }
 }
