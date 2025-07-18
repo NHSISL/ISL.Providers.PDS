@@ -50,6 +50,8 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="ISL.Providers.PDS.FHIR.Tests.Unit" />
 		<InternalsVisibleTo Include="ISL.Providers.PDS.FHIR.Tests.Acceptance" />
+		<InternalsVisibleTo Include="ISL.Providers.PDS.FakeFHIR.Tests.Unit" />
+		<InternalsVisibleTo Include="ISL.Providers.PDS.FakeFHIR.Tests.Acceptance" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	</ItemGroup>
 

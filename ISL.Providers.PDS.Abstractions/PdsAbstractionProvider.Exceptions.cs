@@ -12,14 +12,14 @@ namespace ISL.Providers.PDS.Abstractions
 {
     public partial class PdsAbstractionProvider
     {
-        private delegate ValueTask<PdsResponse> ReturningPdsRequestFunction();
+        private delegate ValueTask<PdsResponse> ReturningPdsResponseFunction();
 
         private async ValueTask<PdsResponse> TryCatch(
-            ReturningPdsRequestFunction returningPdsRequestFunction)
+            ReturningPdsResponseFunction returningPdsResponseFunction)
         {
             try
             {
-                return await returningPdsRequestFunction();
+                return await returningPdsResponseFunction();
             }
             catch (Xeption ex) when (ex is IPdsProviderValidationException)
             {
