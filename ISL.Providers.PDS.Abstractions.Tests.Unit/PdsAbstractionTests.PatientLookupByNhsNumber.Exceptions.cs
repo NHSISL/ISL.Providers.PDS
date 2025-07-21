@@ -3,12 +3,13 @@
 // ---------------------------------------------------------
 
 using FluentAssertions;
-using ISL.Providers.PDS.Abstractions.Models;
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models.Exceptions;
 using ISL.Providers.PDS.Abstractions.Tests.Unit.Models.Exceptions;
 using Moq;
 using System.Threading.Tasks;
 using Xeptions;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.Abstractions.Tests.Unit
 {
@@ -36,7 +37,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<Patient> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -76,7 +77,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<Patient> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -115,7 +116,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<Patient> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -154,7 +155,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<Patient> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -195,7 +196,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(someException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<Patient> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
