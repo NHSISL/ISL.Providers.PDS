@@ -19,16 +19,16 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
             // given
             string randomInputNhsNumber = GetRandomString();
             string inputNhsNumber = randomInputNhsNumber.DeepClone();
-            PdsResponse randomOutputPdsResponse = CreateRandomPdsResponse();
-            PdsResponse outputPdsResponse = randomOutputPdsResponse.DeepClone();
-            PdsResponse expectedPdsResponse = outputPdsResponse.DeepClone();
+            PatientBundle randomOutputPdsResponse = CreateRandomPatientBundle();
+            PatientBundle outputPdsResponse = randomOutputPdsResponse.DeepClone();
+            PatientBundle expectedPdsResponse = outputPdsResponse.DeepClone();
 
             this.pdsProviderMock.Setup(provider =>
                 provider.PatientLookupByNhsNumberAsync(inputNhsNumber))
                     .ReturnsAsync(outputPdsResponse);
 
             // when
-            PdsResponse actualPdsResponse =
+            PatientBundle actualPdsResponse =
                 await this.pdsAbstractionProvider.PatientLookupByNhsNumberAsync(inputNhsNumber);
 
             // then

@@ -3,7 +3,6 @@
 // ---------------------------------------------------------
 
 using ISL.Providers.PDS.Abstractions.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.Abstractions
@@ -11,24 +10,20 @@ namespace ISL.Providers.PDS.Abstractions
     public interface IPdsOperations
     {
         /// <summary>
-        /// Uses PDS FHIR API to obtain the NHS Number for a patient given their Surname, DOB and postcode
+        /// Uses PDS FHIR API to obtain the NHS Number for a patient given provided search parameters
         /// </summary>
         /// <returns>
-        /// A PDS response where the NHS Number has been replaced by the real NHS Number and additional details populated.
-        /// If the PDS search could not happen due to search parameters being invalid, the Nhs Number will be
-        /// replaced by 0000000000.
+        /// A PatientBundle object containing a list of matched patients
         /// </returns>
-        ValueTask<PdsResponse> PatientLookupByDetailsAsync(string surname, string postcode, DateTimeOffset dateOfBirth);
+        ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams);
 
         /// <summary>
-        /// Uses PDS FHIR API to obtain the name, DOB, Postcode and contact information
+        /// Uses PDS FHIR API to obtain the patient details
         /// for a patient given their NHS Number 
         /// </summary>
         /// <returns>
-        /// A PDS response where the name, DOB, Postcode and contact information are populated.
-        /// If the PDS search could not happen due to search parameters being invalid, the Nhs Number will be
-        /// DOB, Postcode and contact information will be empty.
+        /// A PatientBundle object containing a list with one item of corresponding patient 
         /// </returns>
-        ValueTask<PdsResponse> PatientLookupByNhsNumberAsync(string nhsNumber);
+        ValueTask<PatientBundle> PatientLookupByNhsNumberAsync(string nhsNumber);
     }
 }

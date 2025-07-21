@@ -36,7 +36,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<PatientBundle> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -76,7 +76,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<PatientBundle> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -115,7 +115,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<PatientBundle> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -154,7 +154,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(somePdsValidationException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<PatientBundle> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
@@ -195,7 +195,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     .ThrowsAsync(someException);
 
             // when
-            ValueTask<PdsResponse> patientLookupTask =
+            ValueTask<PatientBundle> patientLookupTask =
                 this.pdsAbstractionProvider
                     .PatientLookupByNhsNumberAsync(It.IsAny<string>());
 
