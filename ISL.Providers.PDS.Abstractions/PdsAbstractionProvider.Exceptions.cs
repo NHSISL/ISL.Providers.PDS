@@ -50,49 +50,45 @@ namespace ISL.Providers.PDS.Abstractions
             }
         }
 
-        private PdsProviderValidationException CreateValidationException(
-            Xeption exception)
+        private PdsProviderValidationException CreateValidationException(Xeption exception)
         {
-            var notificationValidationProviderException =
+            var pdsProviderValidationException =
                 new PdsProviderValidationException(
                     message: "Pds validation errors occurred, please try again.",
                     innerException: exception,
                     data: exception.Data);
 
-            return notificationValidationProviderException;
+            return pdsProviderValidationException;
         }
 
-        private PdsProviderDependencyException CreateDependencyException(
-            Xeption exception)
+        private PdsProviderDependencyException CreateDependencyException(Xeption exception)
         {
-            var notificationDependencyProviderException = new PdsProviderDependencyException(
+            var pdsProviderDependencyException = new PdsProviderDependencyException(
                 message: "Pds dependency error occurred, contact support.",
                 innerException: exception,
                 data: exception.Data);
 
-            return notificationDependencyProviderException;
+            return pdsProviderDependencyException;
         }
 
-        private PdsProviderServiceException CreateServiceException(
-            Xeption exception)
+        private PdsProviderServiceException CreateServiceException(Xeption exception)
         {
-            var notificationServiceProviderException = new PdsProviderServiceException(
+            var pdsProviderServiceException = new PdsProviderServiceException(
                 message: "Pds service error occurred, contact support.",
                 innerException: exception,
                 data: exception.Data);
 
-            return notificationServiceProviderException;
+            return pdsProviderServiceException;
         }
 
-        private PdsProviderServiceException CreateUncatagorizedServiceException(
-            Exception exception)
+        private PdsProviderServiceException CreateUncatagorizedServiceException(Exception exception)
         {
-            var notificationServiceProviderException = new PdsProviderServiceException(
+            var pdsProviderServiceException = new PdsProviderServiceException(
                 message: "Uncatagorized pds service error occurred, contact support.",
                 innerException: exception as Xeption,
                 data: exception.Data);
 
-            return notificationServiceProviderException;
+            return pdsProviderServiceException;
         }
     }
 }

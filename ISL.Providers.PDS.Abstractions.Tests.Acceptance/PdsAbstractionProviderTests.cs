@@ -4,7 +4,6 @@
 
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,16 +15,9 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
     {
         private readonly Mock<IPdsProvider> pdsProviderMock;
         private readonly IPdsAbstractionProvider pdsAbstractionProvider;
-        private readonly IConfiguration configuration;
 
         public PdsAbstractionProviderTests()
         {
-            var configurationBuilder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-                .AddEnvironmentVariables();
-
-            configuration = configurationBuilder.Build();
             pdsProviderMock = new Mock<IPdsProvider>();
 
             this.pdsAbstractionProvider =
