@@ -40,13 +40,13 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
         private static List<Patient> CreateRandomPatients()
         {
             List<Patient> patients = new List<Patient>();
-            Patient patient = CreateRandomPatientFiller();
+            Patient patient = CreateRandomPatient();
             patients.Add(patient);
 
             return patients;
         }
 
-        private static Patient CreateRandomPatientFiller()
+        private static Patient CreateRandomPatient()
         {
             var patient = new Patient();
             HumanName humanName = new HumanName

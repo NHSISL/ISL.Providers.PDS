@@ -2,6 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.Abstractions.Models.Exceptions;
 using System;
@@ -12,14 +13,51 @@ namespace ISL.Providers.PDS.Abstractions
 {
     public partial class PdsAbstractionProvider
     {
-        private delegate ValueTask<PatientBundle> ReturningPdsRequestFunction();
+        private delegate ValueTask<PatientBundle> ReturningPatientBundleFunction();
+        private delegate ValueTask<Patient> ReturningPatientFunction();
 
         private async ValueTask<PatientBundle> TryCatch(
-            ReturningPdsRequestFunction returningPdsRequestFunction)
+            ReturningPatientBundleFunction returningPatientBundleFunction)
         {
             try
             {
-                return await returningPdsRequestFunction();
+                return await returningPatientBundleFunction();
+            }
+            catch (Xeption ex) when (ex is IPdsProviderValidationException)
+            {
+                throw CreateValidationException(ex);
+            }
+            catch (Xeption ex) when (ex is IPdsProviderDependencyValidationException)
+            {
+                throw CreateValidationException(ex);
+            }
+            catch (Xeption ex) when (ex is IPdsProviderDependencyException)
+            {
+                throw CreateDependencyException(ex);
+            }
+            catch (Xeption ex) when (ex is IPdsProviderServiceException)
+            {
+                throw CreateServiceException(ex);
+            }
+            catch (Exception ex)
+            {
+                var uncatagorizedPdsProviderException =
+                    new UncatagorizedPdsProviderException(
+                        message: "Pds provider not properly implemented. Uncatagorized errors found, " +
+                            "contact the pds provider owner for support.",
+                        innerException: ex,
+                        data: ex.Data);
+
+                throw CreateUncatagorizedServiceException(uncatagorizedPdsProviderException);
+            }
+        }
+
+        private async ValueTask<Patient> TryCatch(
+            ReturningPatientFunction returningPatientFunction)
+        {
+            try
+            {
+                return await returningPatientFunction();
             }
             catch (Xeption ex) when (ex is IPdsProviderValidationException)
             {

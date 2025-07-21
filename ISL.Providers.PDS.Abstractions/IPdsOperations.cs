@@ -2,6 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using System.Threading.Tasks;
 
@@ -22,8 +23,8 @@ namespace ISL.Providers.PDS.Abstractions
         /// for a patient given their NHS Number 
         /// </summary>
         /// <returns>
-        /// A PatientBundle object containing a list with one item of corresponding patient 
+        /// A Patient object containing information on the corresponding patient 
         /// </returns>
-        ValueTask<PatientBundle> PatientLookupByNhsNumberAsync(string nhsNumber);
+        ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber);
     }
 }
