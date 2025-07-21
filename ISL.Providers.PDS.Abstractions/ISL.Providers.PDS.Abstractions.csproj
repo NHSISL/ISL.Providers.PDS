@@ -49,6 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Hl7.Fhir.R4" Version="5.12.1" />
 	  <PackageReference Include="Xeption" Version="2.8.0" />
 	</ItemGroup>
 
