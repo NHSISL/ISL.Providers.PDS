@@ -5,7 +5,9 @@
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Mappers;
+using ISL.Providers.PDS.FakeFHIR.Models;
 using ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using Tynamix.ObjectFiller;
@@ -15,10 +17,21 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
     public partial class PdsServiceTests
     {
         private readonly IFakeFHIRProvider fakeFHIRProvider;
+        private readonly IConfiguration configuration;
 
         public PdsServiceTests()
         {
-            this.fakeFHIRProvider = new FakeFHIRProvider();
+            var configurationBuilder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            configuration = configurationBuilder.Build();
+
+            FakeFHIRProviderConfigurations fakeFHIRProviderConfigurations = configuration
+                .GetSection("fakeFHIRProviderConfigurations")
+                    .Get<FakeFHIRProviderConfigurations>();
+
+            this.fakeFHIRProvider = new FakeFHIRProvider(fakeFHIRProviderConfigurations);
         }
 
         private static string GenerateRandom10DigitNumber()

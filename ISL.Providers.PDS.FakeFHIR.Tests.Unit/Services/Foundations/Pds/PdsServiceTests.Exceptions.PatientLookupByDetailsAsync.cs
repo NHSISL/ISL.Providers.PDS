@@ -5,7 +5,6 @@
 using FluentAssertions;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
-using Moq;
 using System;
 using System.Threading.Tasks;
 
@@ -31,10 +30,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
                     message: "Pds service error occurred, please contact support.",
                     innerException: failedServicePdsException);
 
-            fakeFHIRBrokerMock.Setup(broker =>
-                broker.GetNhsNumberAsync(someString))
-                    .ThrowsAsync(serviceException);
-
             // when
             ValueTask<PatientBundle> lookupByDetailsTask =
                 pdsService.PatientLookupByDetailsAsync(someString);
@@ -46,12 +41,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             // then
             actualPdsServiceException.Should().BeEquivalentTo(
                 expectedPdsServiceException);
-
-            fakeFHIRBrokerMock.Verify(service =>
-                service.GetNhsNumberAsync(someString),
-                    Times.Once);
-
-            this.fakeFHIRBrokerMock.VerifyNoOtherCalls();
         }
     }
 }

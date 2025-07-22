@@ -11,6 +11,7 @@ using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using ISL.Providers.PDS.FakeFHIR.Models.Providers.Exceptions;
 using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FakeFHIR.Models;
 
 namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
 {
@@ -18,9 +19,9 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
     {
         private IPdsService pdsService { get; set; }
 
-        public FakeFHIRProvider()
+        public FakeFHIRProvider(FakeFHIRProviderConfigurations fakeFHIRProviderConfigurations)
         {
-            IServiceProvider serviceProvider = RegisterServices();
+            IServiceProvider serviceProvider = RegisterServices(fakeFHIRProviderConfigurations);
             InitializeClients(serviceProvider);
         }
 
@@ -137,10 +138,12 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
         private void InitializeClients(IServiceProvider serviceProvider) =>
             this.pdsService = serviceProvider.GetRequiredService<IPdsService>();
 
-        private static IServiceProvider RegisterServices()
+        private static IServiceProvider RegisterServices(
+            FakeFHIRProviderConfigurations fakeFHIRProviderConfigurations)
         {
             var serviceCollection = new ServiceCollection()
-                .AddTransient<IPdsService, PdsService>();
+                .AddTransient<IPdsService, PdsService>()
+                .AddSingleton(fakeFHIRProviderConfigurations);
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 

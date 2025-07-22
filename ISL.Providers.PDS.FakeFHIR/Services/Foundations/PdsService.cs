@@ -4,19 +4,24 @@
 
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
-using ISL.Providers.PDS.FakeFHIR.Brokers.FakeFHIR;
 using ISL.Providers.PDS.FakeFHIR.Mappers;
+using ISL.Providers.PDS.FakeFHIR.Models;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
     internal partial class PdsService : IPdsService
     {
-        private readonly IFakeFHIRBroker fakeFHIRBroker;
+        private readonly FakeFHIRProviderConfigurations fakeFHIRProviderConfiguration;
+        private List<PdsPatientDetails> FakePatientDetails = new List<PdsPatientDetails>();
 
-        public PdsService(IFakeFHIRBroker fakeFHIRBroker)
-        {
-            this.fakeFHIRBroker = fakeFHIRBroker;
+        public PdsService(
+            FakeFHIRProviderConfigurations fakeFHIRProviderConfiguration)
+        { 
+            this.fakeFHIRProviderConfiguration = fakeFHIRProviderConfiguration;
+            this.FakePatientDetails = GetFakePatientDetails();
         }
 
         public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams) =>
@@ -24,7 +29,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 ValidatePatientLookupByDetailsArguments(searchParams);
 
-                Bundle bundle = await fakeFHIRBroker.GetNhsNumberAsync(searchParams);
+                Bundle bundle = new Bundle();
                 PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
 
                 return patientBundle;
@@ -35,9 +40,34 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 ValidatePatientLookupByNhsNumberArguments(nhsNumber);
 
-                Patient patient = await fakeFHIRBroker.GetPdsPatientDetailsAsync(nhsNumber);
+                Patient patient = new Patient();
 
                 return patient;
             });
+
+        private List<PdsPatientDetails> GetFakePatientDetails()
+        {
+            List<PdsPatientDetails> fakePatients = new List<PdsPatientDetails>();
+
+            foreach (FakeFHIRProviderPatientDetails patientDetails in fakeFHIRProviderConfiguration.FakePatients)
+            {
+                PdsPatientDetails pdsPatientDetails = new PdsPatientDetails
+                {
+                    Title = patientDetails.Title,
+                    GivenNames = patientDetails.GivenNames,
+                    Surname = patientDetails.Surname,
+                    PhoneNumber = patientDetails.PhoneNumber,
+                    EmailAddress = patientDetails.EmailAddress,
+                    Address = patientDetails.Address,
+                    Postcode = patientDetails.Postcode,
+                    NhsNumber = patientDetails.NhsNumber,
+                    DateOfBirth = DateTimeOffset.Parse(patientDetails.DateOfBirth)
+                };
+
+                fakePatients.Add(pdsPatientDetails);
+            }
+
+            return fakePatients;
+        }
     }
 }

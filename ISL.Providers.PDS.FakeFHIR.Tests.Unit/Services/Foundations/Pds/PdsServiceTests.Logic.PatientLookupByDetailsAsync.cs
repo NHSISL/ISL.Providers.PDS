@@ -6,7 +6,6 @@ using FluentAssertions;
 using Force.DeepCloner;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
-using Moq;
 using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
@@ -25,22 +24,12 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             PatientBundle output = randomPatientBundle.DeepClone();
             PatientBundle expectedResponse = output.DeepClone();
 
-            this.fakeFHIRBrokerMock.Setup(broker =>
-                broker.GetNhsNumberAsync(inputSearchParams))
-                    .ReturnsAsync(randomBundle);
-
             // when
             PatientBundle actualResponse = await this.pdsService
                 .PatientLookupByDetailsAsync(inputSearchParams);
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);
-
-            this.fakeFHIRBrokerMock.Verify(broker =>
-                broker.GetNhsNumberAsync(inputSearchParams), 
-                    Times.Once());
-
-            this.fakeFHIRBrokerMock.VerifyNoOtherCalls();
         }
     }
 }

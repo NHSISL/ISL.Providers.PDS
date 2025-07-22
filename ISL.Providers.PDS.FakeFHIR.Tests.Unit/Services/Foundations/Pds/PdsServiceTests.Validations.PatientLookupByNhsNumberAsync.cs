@@ -5,7 +5,6 @@
 using FluentAssertions;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
-using Moq;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
@@ -42,12 +41,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
             // then
             actualException.Should().BeEquivalentTo(expectedPdsValidationException);
-
-            this.fakeFHIRBrokerMock.Verify(broker =>
-                broker.GetPdsPatientDetailsAsync(invalidNhsNumber),
-                    Times.Never);
-
-            this.fakeFHIRBrokerMock.VerifyNoOtherCalls();
         }
     }
 }

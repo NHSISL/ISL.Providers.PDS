@@ -2,9 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using ISL.Providers.PDS.FakeFHIR.Brokers.FakeFHIR;
 using KellermanSoftware.CompareNetObjects;
-using Moq;
 using System;
 using Tynamix.ObjectFiller;
 using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
@@ -12,21 +10,21 @@ using ISL.Providers.PDS.Abstractions.Models;
 using Hl7.Fhir.Model;
 using System.Collections.Generic;
 using ISL.Providers.PDS.FakeFHIR.Mappers;
+using ISL.Providers.PDS.FakeFHIR.Models;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 {
     public partial class PdsServiceTests
     {
-        private readonly Mock<IFakeFHIRBroker> fakeFHIRBrokerMock;
         private readonly IPdsService pdsService;
+        private readonly FakeFHIRProviderConfigurations fakeFHIRProviderConfiguration;
         private readonly ICompareLogic compareLogic;
 
         public PdsServiceTests()
         {
-            this.fakeFHIRBrokerMock = new Mock<IFakeFHIRBroker>();
+            this.fakeFHIRProviderConfiguration = GetRandomConfigurations();
             this.compareLogic = new CompareLogic();
-            this.pdsService = new PdsService(
-                fakeFHIRBroker: fakeFHIRBrokerMock.Object);
+            this.pdsService = new PdsService(this.fakeFHIRProviderConfiguration);
         }
 
         private static string GetRandomString() =>
@@ -38,6 +36,17 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             var randomNumber = random.Next(1000000000, 2000000000).ToString();
 
             return randomNumber;
+        }
+
+        private static FakeFHIRProviderConfigurations GetRandomConfigurations() =>
+            CreateConfigurationsFiller().Create();
+
+        private static Filler<FakeFHIRProviderConfigurations> CreateConfigurationsFiller()
+        {
+            var filler = new Filler<FakeFHIRProviderConfigurations>();
+            filler.Setup();
+
+            return filler;
         }
 
         public static Bundle CreateRandomBundle()
