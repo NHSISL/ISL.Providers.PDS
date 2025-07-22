@@ -6,7 +6,6 @@ using FluentAssertions;
 using Force.DeepCloner;
 using ISL.Providers.PDS.Abstractions.Models;
 using Moq;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,26 +17,22 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
         public async Task ShouldPatientLookupByDetailsAsync()
         {
             // given
-            string randomInputSurname = GetRandomString();
-            string inputSurname = randomInputSurname.DeepClone();
-            string randomInputPostcode = GetRandomString();
-            string inputPostcode = randomInputSurname.DeepClone();
-            DateTimeOffset randomInputDateOfBirth = GetRandomDateTimeOffset();
-            DateTimeOffset inputDateOfBirth = randomInputDateOfBirth.DeepClone();
-            PdsResponse randomOutputPdsResponse = CreateRandomPdsResponse();
-            PdsResponse outputPdsResponse = randomOutputPdsResponse.DeepClone();
-            PdsResponse expectedPdsResponse = outputPdsResponse.DeepClone();
+            string randomInputSearchParams = GetRandomString();
+            string inputSearchParams = randomInputSearchParams.DeepClone();
+            PatientBundle randomOutputPatientBundle = CreateRandomPatientBundle();
+            PatientBundle outputPatientBundle = randomOutputPatientBundle.DeepClone();
+            PatientBundle expectedPatientBundle = outputPatientBundle.DeepClone();
 
             this.pdsProviderMock.Setup(provider =>
-                provider.PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth))
-                    .ReturnsAsync(outputPdsResponse);
+                provider.PatientLookupByDetailsAsync(inputSearchParams))
+                    .ReturnsAsync(outputPatientBundle);
 
             // when
-            PdsResponse actualPdsResponse =
-                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth);
+            PatientBundle actualPatientBundle =
+                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(inputSearchParams);
 
             // then
-            actualPdsResponse.Should().BeEquivalentTo(expectedPdsResponse);
+            actualPatientBundle.Should().BeEquivalentTo(expectedPatientBundle);
         }
     }
 }

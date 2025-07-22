@@ -2,11 +2,10 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Brokers.FakeFHIR;
 using ISL.Providers.PDS.FakeFHIR.Brokers.Identifiers;
-using ISL.Providers.PDS.FakeFHIR.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
@@ -22,58 +21,26 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             this.identifierBroker = identifierBroker;
         }
 
-        public ValueTask<PdsResponse> PatientLookupByDetailsAsync(
-            string surname,
-            string postcode,
-            DateTimeOffset dateOfBirth) =>
+        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams) =>
             TryCatch(async () =>
             {
-                ValidatePatientLookupByDetailsArguments(surname, postcode);
+                ValidatePatientLookupByDetailsArguments(searchParams);
 
-                Guid responseId = await identifierBroker.GetIdentifierAsync();
+                PatientBundle patientBundle = new PatientBundle();
 
-                PdsResponse pdsResponse = new PdsResponse
-                {
-                    ResponseId = responseId,
-                    FirstName = "Jane",
-                    Surname = surname,
-                    Address = "1 Trevelyan Square, Boar Lane, City Centre,Leeds, West Yorkshire",
-                    EmailAddress = "jane.smith@example.com",
-                    PhoneNumber = "01632960587",
-                    Postcode = postcode,
-                    DateOfBirth = dateOfBirth,
-                };
+                Bundle bundle = await fakeFHIRBroker.GetNhsNumberAsync(searchParams);
 
-                string nhsNumber = await fakeFHIRBroker.GetNhsNumberAsync(surname, postcode, dateOfBirth);
-                pdsResponse.NhsNumber = nhsNumber;
-
-                return pdsResponse;
+                return patientBundle;
             });
 
-        public ValueTask<PdsResponse> PatientLookupByNhsNumberAsync(string nhsNumber) =>
+        public ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber) =>
             TryCatch(async () =>
             {
                 ValidatePatientLookupByNhsNumberArguments(nhsNumber);
 
-                Guid responseId = await identifierBroker.GetIdentifierAsync();
+                Patient patient = await fakeFHIRBroker.GetPdsPatientDetailsAsync(nhsNumber);
 
-                PdsResponse pdsResponse = new PdsResponse
-                {
-                    ResponseId = responseId,
-                    NhsNumber = nhsNumber
-                };
-
-                PdsPatientDetails pdsPatientDetails = await fakeFHIRBroker.GetPdsPatientDetailsAsync(nhsNumber);
-
-                pdsResponse.FirstName = pdsPatientDetails.FirstName;
-                pdsResponse.Surname = pdsPatientDetails.Surname;
-                pdsResponse.Address = pdsPatientDetails.Address;
-                pdsResponse.EmailAddress = pdsPatientDetails.EmailAddress;
-                pdsResponse.PhoneNumber = pdsPatientDetails.PhoneNumber;
-                pdsResponse.Postcode = pdsPatientDetails.Postcode;
-                pdsResponse.DateOfBirth = pdsPatientDetails.DateOfBirth;
-
-                return pdsResponse;
+                return patient;
             });
     }
 }

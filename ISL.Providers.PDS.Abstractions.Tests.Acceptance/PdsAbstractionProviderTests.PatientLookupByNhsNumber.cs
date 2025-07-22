@@ -4,10 +4,10 @@
 
 using FluentAssertions;
 using Force.DeepCloner;
-using ISL.Providers.PDS.Abstractions.Models;
+using Hl7.Fhir.Model;
 using Moq;
-using System.Threading.Tasks;
 using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
 {
@@ -19,20 +19,20 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
             // given
             string randomInputNhsNumber = GetRandomString();
             string inputNhsNumber = randomInputNhsNumber.DeepClone();
-            PdsResponse randomOutputPdsResponse = CreateRandomPdsResponse();
-            PdsResponse outputPdsResponse = randomOutputPdsResponse.DeepClone();
-            PdsResponse expectedPdsResponse = outputPdsResponse.DeepClone();
+            Patient randomOutputPatient = CreateRandomPatient();
+            Patient outputPatient = randomOutputPatient.DeepClone();
+            Patient expectedPatient = outputPatient.DeepClone();
 
             this.pdsProviderMock.Setup(provider =>
                 provider.PatientLookupByNhsNumberAsync(inputNhsNumber))
-                    .ReturnsAsync(outputPdsResponse);
+                    .ReturnsAsync(outputPatient);
 
             // when
-            PdsResponse actualPdsResponse =
+            Patient actualPatient =
                 await this.pdsAbstractionProvider.PatientLookupByNhsNumberAsync(inputNhsNumber);
 
             // then
-            actualPdsResponse.Should().BeEquivalentTo(expectedPdsResponse);
+            actualPatient.Should().BeEquivalentTo(expectedPatient);
         }
     }
 }

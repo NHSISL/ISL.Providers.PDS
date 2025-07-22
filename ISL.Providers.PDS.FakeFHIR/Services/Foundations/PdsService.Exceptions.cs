@@ -2,6 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using System;
@@ -12,14 +13,38 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
     internal partial class PdsService
     {
-        private delegate ValueTask<PdsResponse> ReturningPdsResponseFunction();
+        private delegate ValueTask<PatientBundle> ReturningPatientBundleFunction();
+        private delegate ValueTask<Patient> ReturningPatientFunction();
 
-        private async ValueTask<PdsResponse> TryCatch(
-            ReturningPdsResponseFunction returningPdsResponseFunction)
+        private async ValueTask<PatientBundle> TryCatch(
+            ReturningPatientBundleFunction returningPatientBundleFunction)
         {
             try
             {
-                return await returningPdsResponseFunction();
+                return await returningPatientBundleFunction();
+            }
+            catch (InvalidArgumentPdsException invalidArgumentPdsException)
+            {
+                throw await CreateAndLogValidationExceptionAsync(invalidArgumentPdsException);
+            }
+            catch (Exception exception)
+            {
+                var failedServiceIdentificationResponseException =
+                    new FailedServicePdsException(
+                        message: "Failed pds service error occurred, please contact support.",
+                        innerException: exception,
+                        data: exception.Data);
+
+                throw await CreateAndLogServiceExceptionAsync(failedServiceIdentificationResponseException);
+            }
+        }
+
+        private async ValueTask<Patient> TryCatch(
+            ReturningPatientFunction returningPatientFunction)
+        {
+            try
+            {
+                return await returningPatientFunction();
             }
             catch (InvalidArgumentPdsException invalidArgumentPdsException)
             {

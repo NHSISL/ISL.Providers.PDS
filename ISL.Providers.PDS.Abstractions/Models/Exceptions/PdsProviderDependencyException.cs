@@ -10,7 +10,7 @@ namespace ISL.Providers.PDS.Abstractions.Models.Exceptions
     public class PdsProviderDependencyException : Xeption
     {
         public PdsProviderDependencyException(string message, Xeption innerException)
-        : base(message, innerException)
+            : base(message, innerException)
         { }
 
         public PdsProviderDependencyException(string message, Xeption innerException, IDictionary data)
