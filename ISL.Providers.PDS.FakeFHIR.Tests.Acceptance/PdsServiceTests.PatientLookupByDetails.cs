@@ -5,7 +5,6 @@
 using FluentAssertions;
 using Force.DeepCloner;
 using ISL.Providers.PDS.Abstractions.Models;
-using System;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
@@ -17,25 +16,17 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
         {
             // given
             string randomString = GetRandomString();
-            string surname = randomString.DeepClone();
-            string postcode = randomString.DeepClone();
-            DateTimeOffset randomDateTimeOffset = GetRandomDateTimeOffset();
-            DateTimeOffset dateOfBirth = randomDateTimeOffset.DeepClone();
+            string searchParams = randomString.DeepClone();
 
-            PdsResponse randomResponse = CreateRandomPdsResponse(
-                dateOfBirth: dateOfBirth, 
-                surname: surname,
-                postcode: postcode);
-
-            PdsResponse expectedResponse = randomResponse.DeepClone();
+            PatientBundle randomPatientBundle = CreateRandomPatientBundle();
+            PatientBundle expectedResponse = randomPatientBundle.DeepClone();
 
             // when
-            PdsResponse actualResponse =
-                await this.fakeFHIRProvider.PatientLookupByDetailsAsync(surname, postcode, dateOfBirth);
+            PatientBundle actualResponse =
+                await this.fakeFHIRProvider.PatientLookupByDetailsAsync(searchParams);
 
             // then
-            actualResponse.Should().BeEquivalentTo(expectedResponse, options =>
-                options.Excluding(r => r.ResponseId));
+            actualResponse.Should().BeEquivalentTo(expectedResponse);
         }
     }
 }

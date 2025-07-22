@@ -3,11 +3,12 @@
 // ---------------------------------------------------------
 
 using FluentAssertions;
-using ISL.Providers.PDS.Abstractions.Models;
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using Moq;
 using System;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -31,12 +32,12 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
                     message: "Pds service error occurred, please contact support.",
                     innerException: failedServicePdsException);
 
-            identifierBrokerMock.Setup(broker =>
-                broker.GetIdentifierAsync())
+            fakeFHIRBrokerMock.Setup(broker =>
+                broker.GetPdsPatientDetailsAsync(someIdentifierString))
                     .ThrowsAsync(serviceException);
 
             // when
-            ValueTask<PdsResponse> lookupByDetailsTask =
+            ValueTask<Patient> lookupByDetailsTask =
                 pdsService.PatientLookupByNhsNumberAsync(someIdentifierString);
 
             PdsServiceException actualPdsServiceException =
@@ -47,11 +48,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             actualPdsServiceException.Should().BeEquivalentTo(
                 expectedPdsServiceException);
 
-            identifierBrokerMock.Verify(service =>
-                service.GetIdentifierAsync(),
+            fakeFHIRBrokerMock.Verify(service =>
+                service.GetPdsPatientDetailsAsync(someIdentifierString),
                     Times.Once);
 
-            this.identifierBrokerMock.VerifyNoOtherCalls();
             this.fakeFHIRBrokerMock.VerifyNoOtherCalls();
         }
     }

@@ -3,10 +3,11 @@
 // ---------------------------------------------------------
 
 using FluentAssertions;
-using ISL.Providers.PDS.Abstractions.Models;
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using Moq;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -17,11 +18,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         [InlineData("")]
         [InlineData("   ")]
         [InlineData("1234")]
-        public async Task ShouldThrowValidationExceptionOnPatientLookupByNhsNumberAsync(string invalidPath)
+        public async Task ShouldThrowValidationExceptionOnPatientLookupByNhsNumberAsync(string invalidNhsNumber)
         {
             // given
             var invalidArgumentPdsException =
-                new InvalidArgumentPdsException("Invalid Pds argument(s). Please correct the errors and try again.");
+                new InvalidArgumentPdsException("Invalid Pds argument. Please correct the errors and try again.");
 
             invalidArgumentPdsException.AddData(
                 key: "nhsNumber",
@@ -33,8 +34,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
                     innerException: invalidArgumentPdsException);
 
             // when
-            ValueTask<PdsResponse> patientLookupByNhsNumberAction =
-                pdsService.PatientLookupByNhsNumberAsync(invalidPath);
+            ValueTask<Patient> patientLookupByNhsNumberAction =
+                pdsService.PatientLookupByNhsNumberAsync(invalidNhsNumber);
 
             PdsValidationException actualException =
                 await Assert.ThrowsAsync<PdsValidationException>(patientLookupByNhsNumberAction.AsTask);
@@ -42,11 +43,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             // then
             actualException.Should().BeEquivalentTo(expectedPdsValidationException);
 
-            this.identifierBrokerMock.Verify(broker =>
-                broker.GetIdentifierAsync(),
+            this.fakeFHIRBrokerMock.Verify(broker =>
+                broker.GetPdsPatientDetailsAsync(invalidNhsNumber),
                     Times.Never);
 
-            this.identifierBrokerMock.VerifyNoOtherCalls();
             this.fakeFHIRBrokerMock.VerifyNoOtherCalls();
         }
     }

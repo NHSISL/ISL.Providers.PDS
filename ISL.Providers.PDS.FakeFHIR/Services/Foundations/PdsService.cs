@@ -5,7 +5,7 @@
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Brokers.FakeFHIR;
-using ISL.Providers.PDS.FakeFHIR.Brokers.Identifiers;
+using ISL.Providers.PDS.FakeFHIR.Mappers;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
@@ -13,12 +13,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
     internal partial class PdsService : IPdsService
     {
         private readonly IFakeFHIRBroker fakeFHIRBroker;
-        private readonly IIdentifierBroker identifierBroker;
 
-        public PdsService(IFakeFHIRBroker fakeFHIRBroker, IIdentifierBroker identifierBroker)
+        public PdsService(IFakeFHIRBroker fakeFHIRBroker)
         {
             this.fakeFHIRBroker = fakeFHIRBroker;
-            this.identifierBroker = identifierBroker;
         }
 
         public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams) =>
@@ -26,9 +24,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 ValidatePatientLookupByDetailsArguments(searchParams);
 
-                PatientBundle patientBundle = new PatientBundle();
-
                 Bundle bundle = await fakeFHIRBroker.GetNhsNumberAsync(searchParams);
+                PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
 
                 return patientBundle;
             });

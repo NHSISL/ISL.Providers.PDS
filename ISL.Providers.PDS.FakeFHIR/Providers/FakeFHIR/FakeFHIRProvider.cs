@@ -141,7 +141,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
         private static IServiceProvider RegisterServices()
         {
             var serviceCollection = new ServiceCollection()
-                .AddTransient<IIdentifierBroker, IdentifierBroker>()
                 .AddTransient<IFakeFHIRBroker, FakeFHIRBroker>()
                 .AddTransient<IPdsService, PdsService>();
 

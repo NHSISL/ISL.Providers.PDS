@@ -4,10 +4,10 @@
 
 using FluentAssertions;
 using Force.DeepCloner;
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using Moq;
-using System;
-using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -17,49 +17,29 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         public async Task ShouldPatientLookupByDetailsAsync()
         {
             // given
-            Guid randomIdentifier = Guid.NewGuid();
             string randomString = GetRandomString();
-            string inputSurname = randomString.DeepClone();
-            string inputPostcode = randomString.DeepClone();
-            DateTimeOffset randomDateTime = GetRandomDateTimeOffset();
-            DateTimeOffset inputDateOfBirth = randomDateTime.DeepClone();
-            string randomOutputString = GenerateRandom10DigitNumber();
-            string outputNhsNumber = randomOutputString.DeepClone();
+            string inputSearchParams = randomString.DeepClone();
 
-            PdsResponse randomPdsResponse = CreateRandomPdsResponse(
-                responseId: randomIdentifier,
-                surname: inputSurname,
-                postcode: inputPostcode,
-                dateOfBirth: inputDateOfBirth,
-                nhsNumber: outputNhsNumber);
-
-            PdsResponse output = randomPdsResponse.DeepClone();
-            PdsResponse expectedResponse = output.DeepClone();
-
-            this.identifierBrokerMock.Setup(broker =>
-                broker.GetIdentifierAsync())
-                    .ReturnsAsync(randomIdentifier);
+            Bundle randomBundle = CreateRandomBundle();
+            PatientBundle randomPatientBundle = CreateRandomPatientBundle(randomBundle);
+            PatientBundle output = randomPatientBundle.DeepClone();
+            PatientBundle expectedResponse = output.DeepClone();
 
             this.fakeFHIRBrokerMock.Setup(broker =>
-                broker.GetNhsNumberAsync(inputSurname, inputPostcode, inputDateOfBirth))
-                    .ReturnsAsync(outputNhsNumber);
+                broker.GetNhsNumberAsync(inputSearchParams))
+                    .ReturnsAsync(randomBundle);
 
             // when
-            PdsResponse actualResponse = await this.pdsService
-                .PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth);
+            PatientBundle actualResponse = await this.pdsService
+                .PatientLookupByDetailsAsync(inputSearchParams);
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);
 
-            this.identifierBrokerMock.Verify(broker =>
-                broker.GetIdentifierAsync(),
-                    Times.Once());
-
             this.fakeFHIRBrokerMock.Verify(broker =>
-                broker.GetNhsNumberAsync(inputSurname, inputPostcode, inputDateOfBirth), 
+                broker.GetNhsNumberAsync(inputSearchParams), 
                     Times.Once());
 
-            this.identifierBrokerMock.VerifyNoOtherCalls();
             this.fakeFHIRBrokerMock.VerifyNoOtherCalls();
         }
     }

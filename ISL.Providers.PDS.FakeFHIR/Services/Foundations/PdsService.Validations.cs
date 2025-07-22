@@ -10,14 +10,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
     internal partial class PdsService
     {
-        private static void ValidatePatientLookupByDetailsArguments(string surname, string postcode)
+        private static void ValidatePatientLookupByDetailsArguments(string searchParams)
         {
             Validate(
-                (Rule: IsInvalid(surname),
-                Parameter: nameof(surname)),
-
-                (Rule: IsInvalid(postcode),
-                Parameter: nameof(postcode)));
+                (Rule: IsInvalid(searchParams),
+                Parameter: nameof(searchParams)));
         }
 
         private static void ValidatePatientLookupByNhsNumberArguments(string nhsNumber)
@@ -51,7 +48,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         {
             var invalidIdentificationRequestException =
                 new InvalidArgumentPdsException(
-                    message: "Invalid Pds argument(s). Please correct the errors and try again.");
+                    message: "Invalid Pds argument. Please correct the errors and try again.");
 
             foreach ((dynamic rule, string parameter) in validations)
             {
