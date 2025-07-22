@@ -35,11 +35,28 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
         /// <exception cref="FakeFHIRProviderDependencyValidationException" />
         /// <exception cref="FakeFHIRProviderDependencyException" />
         /// <exception cref="FakeFHIRProviderServiceException" />
-        public async ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams)
+        public async ValueTask<PatientBundle> PatientLookupByDetailsAsync(string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postCode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null)
         {
             try
             {
-                return await pdsService.PatientLookupByDetailsAsync(searchParams);
+                return await pdsService.PatientLookupByDetailsAsync(
+                    givenName,
+                    familyName,
+                    gender,
+                    postCode,
+                    dateOfBirth,
+                    dateOfDeath,
+                    registeredGpPractice,
+                    email,
+                    phoneNumber);
             }
             catch (PdsValidationException pdsValidationException)
             {

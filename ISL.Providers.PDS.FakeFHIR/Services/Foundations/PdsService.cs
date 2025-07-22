@@ -24,10 +24,18 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             this.FakePatientDetails = GetFakePatientDetails();
         }
 
-        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams) =>
+        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postCode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null) =>
             TryCatch(async () =>
             {
-                ValidatePatientLookupByDetailsArguments(searchParams);
+                ValidatePatientLookupByDetailsArguments(givenName);
 
                 Bundle bundle = new Bundle();
                 PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
