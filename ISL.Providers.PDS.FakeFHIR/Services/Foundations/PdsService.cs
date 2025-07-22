@@ -11,7 +11,15 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
     internal class PdsService : IPdsService
     {
-        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams)
+        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postCode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null)
         {
             throw new NotImplementedException();
         }

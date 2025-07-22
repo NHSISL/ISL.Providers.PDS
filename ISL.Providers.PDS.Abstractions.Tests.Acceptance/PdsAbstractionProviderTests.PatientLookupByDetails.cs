@@ -17,19 +17,37 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
         public async Task ShouldPatientLookupByDetailsAsync()
         {
             // given
-            string randomInputSearchParams = GetRandomString();
-            string inputSearchParams = randomInputSearchParams.DeepClone();
+            string randomInputSurname = GetRandomString();
+            string inputSurname = randomInputSurname.DeepClone();
             PatientBundle randomOutputPatientBundle = CreateRandomPatientBundle();
             PatientBundle outputPatientBundle = randomOutputPatientBundle.DeepClone();
             PatientBundle expectedPatientBundle = outputPatientBundle.DeepClone();
 
             this.pdsProviderMock.Setup(provider =>
-                provider.PatientLookupByDetailsAsync(inputSearchParams))
-                    .ReturnsAsync(outputPatientBundle);
+                provider.PatientLookupByDetailsAsync(
+                    null, 
+                    inputSurname, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null))
+                        .ReturnsAsync(outputPatientBundle);
 
             // when
             PatientBundle actualPatientBundle =
-                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(inputSearchParams);
+                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(
+                    null,
+                    inputSurname,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
 
             // then
             actualPatientBundle.Should().BeEquivalentTo(expectedPatientBundle);
