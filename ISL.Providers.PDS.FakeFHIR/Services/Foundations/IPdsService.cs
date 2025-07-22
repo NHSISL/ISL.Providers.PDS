@@ -4,17 +4,14 @@
 
 using ISL.Providers.PDS.Abstractions.Models;
 using System.Threading.Tasks;
-using System;
+using Hl7.Fhir.Model;
 
 namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
     internal interface IPdsService
     {
-        ValueTask<PdsResponse> PatientLookupByDetailsAsync(
-            string surname, 
-            string postcode, 
-            DateTimeOffset dateOfBirth);
+        ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams);
 
-        ValueTask<PdsResponse> PatientLookupByNhsNumberAsync(string nhsNumber);
+        ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber);
     }
 }

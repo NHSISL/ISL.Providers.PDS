@@ -11,6 +11,7 @@ using ISL.Providers.PDS.FakeFHIR.Brokers.FakeFHIR;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using ISL.Providers.PDS.FakeFHIR.Models.Providers.Exceptions;
+using Hl7.Fhir.Model;
 
 namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
 {
@@ -25,25 +26,20 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
         }
 
         /// <summary>
-        /// Uses PDS FHIR API to obtain the NHS Number for a patient given their Surname, DOB and postcode
+        /// Uses PDS FHIR API to obtain the NHS Number for a patient given provided search parameters
         /// </summary>
         /// <returns>
-        /// A PDS response where the NHS Number has been replaced by the real NHS Number and additional details populated.
-        /// If the PDS search could not happen due to search parameters being invalid, the Nhs Number will be
-        /// replaced by 0000000000.
+        /// A PatientBundle object containing a list of matched patients
         /// </returns>
         /// <exception cref="FakeFHIRProviderValidationException" />
         /// <exception cref="FakeFHIRProviderDependencyValidationException" />
         /// <exception cref="FakeFHIRProviderDependencyException" />
         /// <exception cref="FakeFHIRProviderServiceException" />
-        public async ValueTask<PdsResponse> PatientLookupByDetailsAsync(
-            string surname,
-            string postcode,
-            DateTimeOffset dateOfBirth)
+        public async ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams)
         {
             try
             {
-                return await pdsService.PatientLookupByDetailsAsync(surname, postcode, dateOfBirth);
+                return await pdsService.PatientLookupByDetailsAsync(searchParams);
             }
             catch (PdsValidationException pdsValidationException)
             {
@@ -68,19 +64,17 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
         }
 
         /// <summary>
-        /// Uses PDS FHIR API to obtain the name, DOB, Postcode and contact information
+        /// Uses PDS FHIR API to obtain the patient details
         /// for a patient given their NHS Number 
         /// </summary>
         /// <returns>
-        /// A PDS response where the name, DOB, Postcode and contact information are populated.
-        /// If the PDS search could not happen due to search parameters being invalid
-        /// DOB, Postcode and contact information will be empty.
+        /// A Patient object containing information on the corresponding patient 
         /// </returns>
         /// <exception cref="FakeFHIRProviderValidationException" />
         /// <exception cref="FakeFHIRProviderDependencyValidationException" />
         /// <exception cref="FakeFHIRProviderDependencyException" />
         /// <exception cref="FakeFHIRProviderServiceException" />
-        public async ValueTask<PdsResponse> PatientLookupByNhsNumberAsync(string nhsNumber)
+        public async ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber)
         {
             try
             {
