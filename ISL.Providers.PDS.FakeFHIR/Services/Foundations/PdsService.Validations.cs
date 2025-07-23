@@ -22,7 +22,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         {
             if (maybePdsPatientDetails is null)
             {
-                throw new NotFoundPdsPatientDetailsException($"Couldn't find pds patient with nhsNumber: {nhsNumber}.");
+                throw new NotFoundPdsPatientDetailsException($"Couldn't find PDS patient with nhsNumber: {nhsNumber}.");
             }
         }
 
@@ -43,7 +43,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         {
             var invalidIdentificationRequestException =
                 new InvalidArgumentPdsException(
-                    message: "Invalid Pds argument. Please correct the errors and try again.");
+                    message: "Invalid PDS argument. Please correct the errors and try again.");
 
             foreach ((dynamic rule, string parameter) in validations)
             {

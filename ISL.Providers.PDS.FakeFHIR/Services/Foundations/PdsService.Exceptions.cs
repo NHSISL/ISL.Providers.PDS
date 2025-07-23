@@ -31,7 +31,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 var failedServiceIdentificationResponseException =
                     new FailedServicePdsException(
-                        message: "Failed pds service error occurred, please contact support.",
+                        message: "Failed PDS service error occurred, please contact support.",
                         innerException: exception,
                         data: exception.Data);
 
@@ -58,7 +58,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 var failedServiceIdentificationResponseException =
                     new FailedServicePdsException(
-                        message: "Failed pds service error occurred, please contact support.",
+                        message: "Failed PDS service error occurred, please contact support.",
                         innerException: exception,
                         data: exception.Data);
 
@@ -70,7 +70,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             Xeption exception)
         {
             var accessAuditValidationException = new PdsValidationException(
-                message: "Pds validation error occurred, please fix the errors and try again.",
+                message: "PDS validation error occurred, please fix the errors and try again.",
                 innerException: exception);
 
             return accessAuditValidationException;
@@ -80,7 +80,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
            Xeption exception)
         {
             var pdsServiceException = new PdsServiceException(
-                message: "Pds service error occurred, please contact support.",
+                message: "PDS service error occurred, please contact support.",
                 innerException: exception);
 
             return pdsServiceException;

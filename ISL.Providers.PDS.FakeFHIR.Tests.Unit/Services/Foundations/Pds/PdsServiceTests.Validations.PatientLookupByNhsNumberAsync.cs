@@ -27,7 +27,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         {
             // given
             var invalidArgumentPdsException =
-                new InvalidArgumentPdsException("Invalid Pds argument. Please correct the errors and try again.");
+                new InvalidArgumentPdsException("Invalid PDS argument. Please correct the errors and try again.");
 
             invalidArgumentPdsException.AddData(
                 key: "nhsNumber",
@@ -35,7 +35,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
             var expectedPdsValidationException =
                 new PdsValidationException(
-                    message: "Pds validation error occurred, please fix the errors and try again.",
+                    message: "PDS validation error occurred, please fix the errors and try again.",
                     innerException: invalidArgumentPdsException);
 
             // when
@@ -58,11 +58,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
             var notFoundPdsPatientDetailsException =
                 new NotFoundPdsPatientDetailsException(
-                    $"Couldn't find pds patient with nhsNumber: {randomInputNhsNumber}.");
+                    $"Couldn't find PDS patient with nhsNumber: {randomInputNhsNumber}.");
 
             var expectedPdsValidationException =
                 new PdsValidationException(
-                    message: "Pds validation error occurred, please fix the errors and try again.",
+                    message: "PDS validation error occurred, please fix the errors and try again.",
                     innerException: notFoundPdsPatientDetailsException);
 
             var pdsServiceMock = new Mock<PdsService>(this.fakeFHIRProviderConfiguration)

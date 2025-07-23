@@ -23,13 +23,13 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
             var failedServicePdsException =
                 new FailedServicePdsException(
-                    message: "Failed pds service error occurred, please contact support.",
+                    message: "Failed PDS service error occurred, please contact support.",
                     innerException: serviceException,
                     data: serviceException.Data);
 
             var expectedPdsServiceException =
                 new PdsServiceException(
-                    message: "Pds service error occurred, please contact support.",
+                    message: "PDS service error occurred, please contact support.",
                     innerException: failedServicePdsException);
 
             var pdsServiceMock = new Mock<PdsService>(this.fakeFHIRProviderConfiguration)
