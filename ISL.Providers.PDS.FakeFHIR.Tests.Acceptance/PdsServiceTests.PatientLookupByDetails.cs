@@ -5,6 +5,9 @@
 using FluentAssertions;
 using Force.DeepCloner;
 using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.FakeFHIR.Models;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
@@ -15,15 +18,26 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
         public async Task ShouldPatientLookupByDetailsAsync()
         {
             // given
-            string randomString = GetRandomString();
-            string searchParams = randomString.DeepClone();
+            var fakePatients = this.configuration
+                .GetSection("fakeFHIRProviderConfigurations:FakePatients").Get<List<FakeFHIRProviderPatientDetails>>();
 
-            PatientBundle randomPatientBundle = CreateRandomPatientBundle();
+            string randomString = "Smith";
+            string inputSurname = randomString.DeepClone();
+
+            PatientBundle randomPatientBundle = CreatePatientBundle(fakePatients, inputSurname);
             PatientBundle expectedResponse = randomPatientBundle.DeepClone();
 
             // when
             PatientBundle actualResponse =
-                await this.fakeFHIRProvider.PatientLookupByDetailsAsync(searchParams);
+                await this.fakeFHIRProvider.PatientLookupByDetailsAsync(null,
+                    inputSurname,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);

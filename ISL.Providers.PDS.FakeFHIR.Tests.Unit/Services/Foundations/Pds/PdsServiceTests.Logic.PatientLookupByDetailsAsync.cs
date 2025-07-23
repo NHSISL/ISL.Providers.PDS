@@ -4,9 +4,13 @@
 
 using FluentAssertions;
 using Force.DeepCloner;
-using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
-using Task = System.Threading.Tasks.Task;
+using ISL.Providers.PDS.FakeFHIR.Models;
+using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
+using Moq;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -17,16 +21,53 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         {
             // given
             string randomString = GetRandomString();
-            string inputSearchParams = randomString.DeepClone();
+            string inputSearchString = randomString.DeepClone();
 
-            Bundle randomBundle = CreateRandomBundle();
-            PatientBundle randomPatientBundle = CreateRandomPatientBundle(randomBundle);
+            List<PdsPatientDetails> randomPdsPatientDetails = 
+                CreateRandomPdsPatientDetails(inputSearchString).ToList();
+
+            List<PdsPatientDetails> filteredPdsPatientDetails =
+                GetFilteredPdsPatientDetails(randomPdsPatientDetails, inputSearchString);
+
+            PatientBundle randomPatientBundle = CreatePatientBundleFromPatientDetails(filteredPdsPatientDetails);
             PatientBundle output = randomPatientBundle.DeepClone();
             PatientBundle expectedResponse = output.DeepClone();
 
+            var pdsServiceMock = new Mock<PdsService>(this.fakeFHIRProviderConfiguration)
+            { 
+                CallBase = true 
+            };
+
+            pdsServiceMock.Setup(service =>
+                service.GetFakePatientDetails())
+                    .Returns(randomPdsPatientDetails);
+
+            pdsServiceMock.Setup(service =>
+                service.FilterPatientByDetails(
+                    randomPdsPatientDetails,
+                    inputSearchString,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
+                        .Returns(filteredPdsPatientDetails);
+
             // when
-            PatientBundle actualResponse = await this.pdsService
-                .PatientLookupByDetailsAsync(inputSearchParams);
+            PatientBundle actualResponse = await pdsServiceMock.Object
+                .PatientLookupByDetailsAsync(
+                    inputSearchString,
+                    null,
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null);
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);

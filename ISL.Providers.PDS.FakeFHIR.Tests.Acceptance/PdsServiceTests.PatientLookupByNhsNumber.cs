@@ -5,6 +5,9 @@
 using FluentAssertions;
 using Force.DeepCloner;
 using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FakeFHIR.Models;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
@@ -15,16 +18,17 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
         public async Task ShouldPatientLookupByNhsNumberAsync()
         {
             // given
-            string randomIdentifierString = GenerateRandom10DigitNumber();
-            string nhsNumber = randomIdentifierString.DeepClone();
+            var fakePatients = this.configuration
+                .GetSection("fakeFHIRProviderConfigurations:FakePatients").Get<List<FakeFHIRProviderPatientDetails>>();
 
-            Patient randomPatient = CreateRandomPatient();
-
+            string someNhsNumber = "9876543210";
+            string inputNhsNumber = someNhsNumber.DeepClone();
+            Patient randomPatient = CreatePatient(fakePatients, inputNhsNumber);
             Patient expectedResponse = randomPatient.DeepClone();
 
             // when
             Patient actualResponse =
-                await this.fakeFHIRProvider.PatientLookupByNhsNumberAsync(nhsNumber);
+                await this.fakeFHIRProvider.PatientLookupByNhsNumberAsync(inputNhsNumber);
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);

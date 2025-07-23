@@ -50,6 +50,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 throw await CreateAndLogValidationExceptionAsync(invalidArgumentPdsException);
             }
+            catch (NotFoundPdsPatientDetailsException notFoundPdsPatientDetailsException)
+            {
+                throw await CreateAndLogValidationExceptionAsync(notFoundPdsPatientDetailsException);
+            }
             catch (Exception exception)
             {
                 var failedServiceIdentificationResponseException =

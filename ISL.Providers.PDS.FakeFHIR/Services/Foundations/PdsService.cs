@@ -16,13 +16,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
     internal partial class PdsService : IPdsService
     {
         private readonly FakeFHIRProviderConfigurations fakeFHIRProviderConfiguration;
-        private List<PdsPatientDetails> FakePatientDetails = new List<PdsPatientDetails>();
 
         public PdsService(
             FakeFHIRProviderConfigurations fakeFHIRProviderConfiguration)
         { 
             this.fakeFHIRProviderConfiguration = fakeFHIRProviderConfiguration;
-            this.FakePatientDetails = GetFakePatientDetails();
         }
 
         public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string givenName = null,
@@ -36,8 +34,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             string phoneNumber = null) =>
             TryCatch(async () =>
             {
+                List<PdsPatientDetails> fakePatientDetails = GetFakePatientDetails();
+
                 List<PdsPatientDetails> filteredPatients = FilterPatientByDetails(
-                    this.FakePatientDetails,
+                    fakePatientDetails,
                     givenName,
                     familyName,
                     gender,
@@ -66,8 +66,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 ValidatePatientLookupByNhsNumberArguments(nhsNumber);
 
+                List<PdsPatientDetails> fakePatientDetails = GetFakePatientDetails();
+
                 PdsPatientDetails pdsPatientDetails = 
-                    this.FakePatientDetails.Where(patient => patient.NhsNumber == nhsNumber).FirstOrDefault();
+                    fakePatientDetails.Where(patient => patient.NhsNumber == nhsNumber).FirstOrDefault();
 
                 ValidatePdsPatientDetails(pdsPatientDetails, nhsNumber);
 

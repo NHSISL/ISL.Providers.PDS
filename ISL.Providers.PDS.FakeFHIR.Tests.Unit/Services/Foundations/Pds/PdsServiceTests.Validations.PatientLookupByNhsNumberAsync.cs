@@ -4,7 +4,13 @@
 
 using FluentAssertions;
 using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FakeFHIR.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
+using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
+using Moq;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
@@ -41,6 +47,43 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
             // then
             actualException.Should().BeEquivalentTo(expectedPdsValidationException);
+        }
+
+        [Fact]
+        public async Task ShouldThrowNotFoundExceptionOnPatientLookupByNhsNumberIfPatientIsNotFoundAndLogItAsync()
+        {
+            //given
+            string randomInputNhsNumber = GenerateRandom10DigitNumber();
+            List<PdsPatientDetails> noPdsPatientDetails = new List<PdsPatientDetails>();
+
+            var notFoundPdsPatientDetailsException =
+                new NotFoundPdsPatientDetailsException(
+                    $"Couldn't find pds patient with nhsNumber: {randomInputNhsNumber}.");
+
+            var expectedPdsValidationException =
+                new PdsValidationException(
+                    message: "Pds validation error occurred, please fix the errors and try again.",
+                    innerException: notFoundPdsPatientDetailsException);
+
+            var pdsServiceMock = new Mock<PdsService>(this.fakeFHIRProviderConfiguration)
+            {
+                CallBase = true
+            };
+
+            pdsServiceMock.Setup(service =>
+                service.GetFakePatientDetails())
+                    .Returns(noPdsPatientDetails);
+
+            //when
+            ValueTask<Patient> patientLookupByNhsNumberTask =
+                pdsServiceMock.Object.PatientLookupByNhsNumberAsync(randomInputNhsNumber);
+
+            PdsValidationException actualPdsValidationException =
+                await Assert.ThrowsAsync<PdsValidationException>(
+                    patientLookupByNhsNumberTask.AsTask);
+
+            //then
+            actualPdsValidationException.Should().BeEquivalentTo(expectedPdsValidationException);
         }
     }
 }
