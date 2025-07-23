@@ -20,6 +20,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
             {
                 Id = pdsPatientDetails.NhsNumber,
                 BirthDate = pdsPatientDetails.DateOfBirth.ToString("yyyy-MM-dd"),
+
                 Gender = pdsPatientDetails.Gender.ToLower() switch
                 {
                     "male" => AdministrativeGender.Male,
@@ -28,16 +29,22 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                     "unknown" => AdministrativeGender.Unknown,
                     _ => AdministrativeGender.Unknown
                 },
+
                 Deceased = new FhirDateTime(pdsPatientDetails.DateOfDeath),
                 MultipleBirth = new Integer(1),
+
                 Meta = new Meta
                 {
                     VersionId = "2",
                     Security = new List<Coding>
-                {
-                    new Coding("http://terminology.hl7.org/CodeSystem/v3-Confidentiality", "U", "unrestricted")
-                }
+                    {
+                        new Coding(
+                            system: "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+                            code: "U", 
+                            display: "unrestricted")
+                    }
                 },
+
                 Identifier = new List<Identifier>
                 {
                     new Identifier
@@ -54,7 +61,10 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                                     {
                                         Coding = new List<Coding>
                                         {
-                                            new Coding("https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus", "01", "Number present and verified")
+                                            new Coding(
+                                                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus", 
+                                                code: "01", 
+                                                display: "Number present and verified")
                                             {
                                                 Version = "1.0.0"
                                             }
@@ -65,6 +75,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         }
                     }
                 },
+
                 Name = new List<HumanName>
                 {
                     new HumanName
@@ -78,29 +89,47 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime)
                     }
                 },
+
                 Telecom = new List<ContactPoint>
                 {
-                    new ContactPoint(ContactPoint.ContactPointSystem.Phone, ContactPoint.ContactPointUse.Home, pdsPatientDetails.PhoneNumber)
+                    new ContactPoint(
+                        system: ContactPoint.ContactPointSystem.Phone, 
+                        use: ContactPoint.ContactPointUse.Home, 
+                        value: pdsPatientDetails.PhoneNumber)
                     {
                         ElementId = "789",
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime)
                     },
-                    new ContactPoint(ContactPoint.ContactPointSystem.Email, ContactPoint.ContactPointUse.Home, pdsPatientDetails.EmailAddress)
+
+                    new ContactPoint(
+                        system: ContactPoint.ContactPointSystem.Email, 
+                        use: ContactPoint.ContactPointUse.Home, 
+                        value: pdsPatientDetails.EmailAddress)
                     {
                         ElementId = "790",
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime)
                     },
-                    new ContactPoint(ContactPoint.ContactPointSystem.Other, ContactPoint.ContactPointUse.Home, pdsPatientDetails.PhoneNumber)
+
+                    new ContactPoint(
+                        system : ContactPoint.ContactPointSystem.Other, 
+                        use : ContactPoint.ContactPointUse.Home, 
+                        value : pdsPatientDetails.PhoneNumber)
                     {
                         ElementId = "OC789",
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime),
                         Extension = new List<Extension>
                         {
-                            new Extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-OtherContactSystem",
-                                new Coding("https://fhir.hl7.org.uk/CodeSystem/UKCore-OtherContactSystem", "textphone", "Minicom (Textphone)"))
+                            new Extension(
+                                url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-OtherContactSystem",
+
+                                value: new Coding(
+                                    system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-OtherContactSystem", 
+                                    code: "textphone",
+                                    display: "Minicom (Textphone)"))
                         }
                     }
                 },
+
                 Address = new List<Address>
                 {
                     new Address
@@ -117,6 +146,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         }
                     }
                 },
+
                 Contact = new List<Patient.ContactComponent>
                 {
                     new Patient.ContactComponent
@@ -125,14 +155,22 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime),
                         Relationship = new List<CodeableConcept>
                         {
-                            new CodeableConcept("http://terminology.hl7.org/CodeSystem/v2-0131", "C", "Emergency Contact")
+                            new CodeableConcept(
+                                system: "http://terminology.hl7.org/CodeSystem/v2-0131", 
+                                code: "C", 
+                                text: "Emergency Contact")
                         },
+
                         Telecom = new List<ContactPoint>
                         {
-                            new ContactPoint(ContactPoint.ContactPointSystem.Phone, null, pdsPatientDetails.PhoneNumber)
+                            new ContactPoint(
+                                system: ContactPoint.ContactPointSystem.Phone, 
+                                use: null, 
+                                value: pdsPatientDetails.PhoneNumber)
                         }
                     }
                 },
+
                 Extension = new List<Extension>
                 {
                     new Extension()
@@ -156,6 +194,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         }
                     }
                 },
+
                 GeneralPractitioner = new List<ResourceReference>
                 {
                     new ResourceReference
@@ -179,13 +218,16 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
         {
             return new Extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
                 new FhirString(valueString))
-            {
-                Extension = new List<Extension>
-            {
-                new Extension("type", new Coding("https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType", typeCode)),
-                new Extension("value", new FhirString(valueString))
-            }
-            };
+                {
+                    Extension = new List<Extension>
+                    {
+                        new Extension("type", new Coding(
+                            system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType", 
+                            code: typeCode)),
+
+                        new Extension("value", new FhirString(valueString))
+                    }
+                };
         }
     }
 }

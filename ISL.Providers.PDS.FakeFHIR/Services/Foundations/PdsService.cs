@@ -28,7 +28,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string givenName = null,
             string familyName = null,
             string gender = null,
-            string address = null,
+            string postcode = null,
             string dateOfBirth = null,
             string dateOfDeath = null,
             string registeredGpPractice = null,
@@ -36,10 +36,12 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             string phoneNumber = null) =>
             TryCatch(async () =>
             {
-                List<PdsPatientDetails> filteredPatients = FilterPatientByDetails(givenName,
+                List<PdsPatientDetails> filteredPatients = FilterPatientByDetails(
+                    this.FakePatientDetails,
+                    givenName,
                     familyName,
                     gender,
-                    address,
+                    postcode,
                     dateOfBirth,
                     dateOfDeath, registeredGpPractice,
                     email,
@@ -101,17 +103,19 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             return fakePatients;
         }
 
-        virtual internal List<PdsPatientDetails> FilterPatientByDetails(string givenName = null,
+        virtual internal List<PdsPatientDetails> FilterPatientByDetails(
+            List<PdsPatientDetails> patientDetails,
+            string givenName = null,
             string familyName = null,
             string gender = null,
-            string address = null,
+            string postcode = null,
             string dateOfBirth = null,
             string dateOfDeath = null,
             string registeredGpPractice = null,
             string email = null,
             string phoneNumber = null)
         {
-            var patients = this.FakePatientDetails.AsQueryable<PdsPatientDetails>();
+            var patients = patientDetails.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(givenName))
             {
@@ -123,9 +127,9 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
                 patients = patients.Where(patient => patient.Surname.Contains(familyName));
             }
 
-            if (!string.IsNullOrWhiteSpace(address))
+            if (!string.IsNullOrWhiteSpace(postcode))
             {
-                patients = patients.Where(patient => patient.Address.Contains(address));
+                patients = patients.Where(patient => patient.Address.Contains(postcode));
             }
 
             if (!string.IsNullOrWhiteSpace(dateOfBirth))

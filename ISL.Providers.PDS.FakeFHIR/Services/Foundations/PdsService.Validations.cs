@@ -22,7 +22,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         {
             if (maybePdsPatientDetails is null)
             {
-                throw new NotFoundPdsPatientDetailsException(nhsNumber);
+                throw new NotFoundPdsPatientDetailsException($"Couldn't find pds patient with nhsNumber: {nhsNumber}.");
             }
         }
 

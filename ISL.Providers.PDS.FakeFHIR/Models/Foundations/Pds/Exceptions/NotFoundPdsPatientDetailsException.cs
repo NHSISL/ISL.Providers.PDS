@@ -8,8 +8,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions
 {
     public class NotFoundPdsPatientDetailsException : Xeption
     {
-        public NotFoundPdsPatientDetailsException(string nhsNumber)
-            : base(message: $"Couldn't find pds patient with nhsNumber: {nhsNumber}.")
+        public NotFoundPdsPatientDetailsException(string message)
+            : base(message)
         { }
     }
 }
