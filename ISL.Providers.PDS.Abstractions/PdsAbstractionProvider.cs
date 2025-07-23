@@ -24,10 +24,28 @@ namespace ISL.Providers.PDS.Abstractions
         /// <exception cref="PdsValidationProviderException" />
         /// <exception cref="PdsDependencyProviderException" />
         /// <exception cref="PdsServiceProviderException" />
-        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams) =>
+        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(
+            string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postCode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null) =>
         TryCatch(async () =>
         {
-            return await this.pdsProvider.PatientLookupByDetailsAsync(searchParams);
+            return await this.pdsProvider.PatientLookupByDetailsAsync(
+                givenName: givenName,
+                familyName: familyName,
+                gender: gender,
+                postCode: postCode,
+                dateOfBirth: dateOfBirth,
+                dateOfDeath: dateOfDeath,
+                registeredGpPractice: registeredGpPractice,
+                email: email,
+                phoneNumber: phoneNumber);
         });
 
         /// <summary>

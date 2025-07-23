@@ -16,7 +16,16 @@ namespace ISL.Providers.PDS.Abstractions
         /// <returns>
         /// A PatientBundle object containing a list of matched patients
         /// </returns>
-        ValueTask<PatientBundle> PatientLookupByDetailsAsync(string searchParams);
+        ValueTask<PatientBundle> PatientLookupByDetailsAsync(
+            string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postCode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null);
 
         /// <summary>
         /// Uses PDS FHIR API to obtain the patient details
