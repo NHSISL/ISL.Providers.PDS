@@ -6,7 +6,6 @@ using FluentAssertions;
 using Force.DeepCloner;
 using ISL.Providers.PDS.Abstractions.Models;
 using Moq;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -20,24 +19,38 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Acceptance
             // given
             string randomInputSurname = GetRandomString();
             string inputSurname = randomInputSurname.DeepClone();
-            string randomInputPostcode = GetRandomString();
-            string inputPostcode = randomInputSurname.DeepClone();
-            DateTimeOffset randomInputDateOfBirth = GetRandomDateTimeOffset();
-            DateTimeOffset inputDateOfBirth = randomInputDateOfBirth.DeepClone();
-            PdsResponse randomOutputPdsResponse = CreateRandomPdsResponse();
-            PdsResponse outputPdsResponse = randomOutputPdsResponse.DeepClone();
-            PdsResponse expectedPdsResponse = outputPdsResponse.DeepClone();
+            PatientBundle randomOutputPatientBundle = CreateRandomPatientBundle();
+            PatientBundle outputPatientBundle = randomOutputPatientBundle.DeepClone();
+            PatientBundle expectedPatientBundle = outputPatientBundle.DeepClone();
 
             this.pdsProviderMock.Setup(provider =>
-                provider.PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth))
-                    .ReturnsAsync(outputPdsResponse);
+                provider.PatientLookupByDetailsAsync(
+                    null, 
+                    inputSurname, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null, 
+                    null))
+                        .ReturnsAsync(outputPatientBundle);
 
             // when
-            PdsResponse actualPdsResponse =
-                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(inputSurname, inputPostcode, inputDateOfBirth);
+            PatientBundle actualPatientBundle =
+                await this.pdsAbstractionProvider.PatientLookupByDetailsAsync(
+                    null,
+                    inputSurname,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
 
             // then
-            actualPdsResponse.Should().BeEquivalentTo(expectedPdsResponse);
+            actualPatientBundle.Should().BeEquivalentTo(expectedPatientBundle);
         }
     }
 }

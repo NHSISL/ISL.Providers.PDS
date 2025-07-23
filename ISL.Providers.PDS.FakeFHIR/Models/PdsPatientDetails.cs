@@ -4,18 +4,20 @@
 
 using System;
 
-namespace ISL.Providers.PDS.Abstractions.Models
+namespace ISL.Providers.PDS.FakeFHIR.Models
 {
-    public class PdsResponse
+    internal class PdsPatientDetails
     {
-        public Guid ResponseId { get; set; }
-        public string NhsNumber { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string GivenName { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
+        public string Gender { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string EmailAddress { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public string Postcode { get; set; } = string.Empty;
+        public string NhsNumber { get; set; } = string.Empty;
         public DateTimeOffset DateOfBirth { get; set; }
+        public DateTimeOffset DateOfDeath { get; set; }
+        public string RegisteredGpPractice { get; set; } = string.Empty;
     }
 }

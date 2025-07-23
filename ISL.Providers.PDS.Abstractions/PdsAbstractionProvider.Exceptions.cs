@@ -2,6 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.Abstractions.Models.Exceptions;
 using System;
@@ -12,14 +13,15 @@ namespace ISL.Providers.PDS.Abstractions
 {
     public partial class PdsAbstractionProvider
     {
-        private delegate ValueTask<PdsResponse> ReturningPdsRequestFunction();
+        private delegate ValueTask<PatientBundle> ReturningPatientBundleFunction();
+        private delegate ValueTask<Patient> ReturningPatientFunction();
 
-        private async ValueTask<PdsResponse> TryCatch(
-            ReturningPdsRequestFunction returningPdsRequestFunction)
+        private async ValueTask<PatientBundle> TryCatch(
+            ReturningPatientBundleFunction returningPatientBundleFunction)
         {
             try
             {
-                return await returningPdsRequestFunction();
+                return await returningPatientBundleFunction();
             }
             catch (Xeption ex) when (ex is IPdsProviderValidationException)
             {
@@ -50,49 +52,81 @@ namespace ISL.Providers.PDS.Abstractions
             }
         }
 
-        private PdsProviderValidationException CreateValidationException(
-            Xeption exception)
+        private async ValueTask<Patient> TryCatch(
+            ReturningPatientFunction returningPatientFunction)
         {
-            var notificationValidationProviderException =
+            try
+            {
+                return await returningPatientFunction();
+            }
+            catch (Xeption ex) when (ex is IPdsProviderValidationException)
+            {
+                throw CreateValidationException(ex);
+            }
+            catch (Xeption ex) when (ex is IPdsProviderDependencyValidationException)
+            {
+                throw CreateValidationException(ex);
+            }
+            catch (Xeption ex) when (ex is IPdsProviderDependencyException)
+            {
+                throw CreateDependencyException(ex);
+            }
+            catch (Xeption ex) when (ex is IPdsProviderServiceException)
+            {
+                throw CreateServiceException(ex);
+            }
+            catch (Exception ex)
+            {
+                var uncatagorizedPdsProviderException =
+                    new UncatagorizedPdsProviderException(
+                        message: "Pds provider not properly implemented. Uncatagorized errors found, " +
+                            "contact the pds provider owner for support.",
+                        innerException: ex,
+                        data: ex.Data);
+
+                throw CreateUncatagorizedServiceException(uncatagorizedPdsProviderException);
+            }
+        }
+
+        private PdsProviderValidationException CreateValidationException(Xeption exception)
+        {
+            var pdsProviderValidationException =
                 new PdsProviderValidationException(
                     message: "Pds validation errors occurred, please try again.",
                     innerException: exception,
                     data: exception.Data);
 
-            return notificationValidationProviderException;
+            return pdsProviderValidationException;
         }
 
-        private PdsProviderDependencyException CreateDependencyException(
-            Xeption exception)
+        private PdsProviderDependencyException CreateDependencyException(Xeption exception)
         {
-            var notificationDependencyProviderException = new PdsProviderDependencyException(
+            var pdsProviderDependencyException = new PdsProviderDependencyException(
                 message: "Pds dependency error occurred, contact support.",
                 innerException: exception,
                 data: exception.Data);
 
-            return notificationDependencyProviderException;
+            return pdsProviderDependencyException;
         }
 
-        private PdsProviderServiceException CreateServiceException(
-            Xeption exception)
+        private PdsProviderServiceException CreateServiceException(Xeption exception)
         {
-            var notificationServiceProviderException = new PdsProviderServiceException(
+            var pdsProviderServiceException = new PdsProviderServiceException(
                 message: "Pds service error occurred, contact support.",
                 innerException: exception,
                 data: exception.Data);
 
-            return notificationServiceProviderException;
+            return pdsProviderServiceException;
         }
 
-        private PdsProviderServiceException CreateUncatagorizedServiceException(
-            Exception exception)
+        private PdsProviderServiceException CreateUncatagorizedServiceException(Exception exception)
         {
-            var notificationServiceProviderException = new PdsProviderServiceException(
+            var pdsProviderServiceException = new PdsProviderServiceException(
                 message: "Uncatagorized pds service error occurred, contact support.",
                 innerException: exception as Xeption,
                 data: exception.Data);
 
-            return notificationServiceProviderException;
+            return pdsProviderServiceException;
         }
     }
 }
