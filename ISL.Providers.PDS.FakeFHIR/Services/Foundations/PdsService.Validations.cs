@@ -2,6 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using ISL.Providers.PDS.FakeFHIR.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using System;
 using System.Linq;
@@ -10,13 +11,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
     internal partial class PdsService
     {
-        private static void ValidatePatientLookupByDetailsArguments(string searchParams)
-        {
-            Validate(
-                (Rule: IsInvalid(searchParams),
-                Parameter: nameof(searchParams)));
-        }
-
         private static void ValidatePatientLookupByNhsNumberArguments(string nhsNumber)
         {
             Validate(
@@ -24,11 +18,13 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
                 Parameter: nameof(nhsNumber)));
         }
 
-        private static dynamic IsInvalid(string text) => new
+        private static void ValidatePdsPatientDetails(PdsPatientDetails maybePdsPatientDetails, string nhsNumber)
         {
-            Condition = string.IsNullOrWhiteSpace(text),
-            Message = "Text is required"
-        };
+            if (maybePdsPatientDetails is null)
+            {
+                throw new NotFoundPdsPatientDetailsException(nhsNumber);
+            }
+        }
 
         private static dynamic IsInvalidIdentifier(string name) => new
         {
@@ -42,7 +38,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 
             return result;
         }
-
 
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)
         {

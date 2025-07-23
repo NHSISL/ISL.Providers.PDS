@@ -16,7 +16,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
             {
                 Id = bundle.Id,
                 Type = bundle.Type?.ToString(),
-                Total = bundle.Total,
+                Total = bundle.Total ?? 0,
                 Timestamp = bundle.Timestamp.ToString(),
                 Links = bundle.Link ?? new List<Bundle.LinkComponent>(),
                 Patients = ExtractPatients(bundle)

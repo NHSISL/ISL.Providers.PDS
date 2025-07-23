@@ -8,6 +8,7 @@ using ISL.Providers.PDS.FakeFHIR.Mappers;
 using ISL.Providers.PDS.FakeFHIR.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
@@ -27,7 +28,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
         public ValueTask<PatientBundle> PatientLookupByDetailsAsync(string givenName = null,
             string familyName = null,
             string gender = null,
-            string postCode = null,
+            string address = null,
             string dateOfBirth = null,
             string dateOfDeath = null,
             string registeredGpPractice = null,
@@ -35,9 +36,24 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             string phoneNumber = null) =>
             TryCatch(async () =>
             {
-                ValidatePatientLookupByDetailsArguments(givenName);
+                List<PdsPatientDetails> filteredPatients = FilterPatientByDetails(givenName,
+                    familyName,
+                    gender,
+                    address,
+                    dateOfBirth,
+                    dateOfDeath, registeredGpPractice,
+                    email,
+                    phoneNumber);
 
-                Bundle bundle = new Bundle();
+                var patients = new List<Patient>();
+
+                foreach (var filteredPatient in filteredPatients)
+                {
+                    Patient patient = PatientMapper.FromPdsPatientDetails(filteredPatient);
+                    patients.Add(patient);
+                }
+
+                Bundle bundle = BundleMapper.FromListOfPatients(patients);
                 PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
 
                 return patientBundle;
@@ -48,12 +64,17 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             {
                 ValidatePatientLookupByNhsNumberArguments(nhsNumber);
 
-                Patient patient = new Patient();
+                PdsPatientDetails pdsPatientDetails = 
+                    this.FakePatientDetails.Where(patient => patient.NhsNumber == nhsNumber).FirstOrDefault();
+
+                ValidatePdsPatientDetails(pdsPatientDetails, nhsNumber);
+
+                Patient patient = PatientMapper.FromPdsPatientDetails(pdsPatientDetails);
 
                 return patient;
             });
 
-        private List<PdsPatientDetails> GetFakePatientDetails()
+        virtual internal List<PdsPatientDetails> GetFakePatientDetails()
         {
             List<PdsPatientDetails> fakePatients = new List<PdsPatientDetails>();
 
@@ -62,20 +83,77 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
                 PdsPatientDetails pdsPatientDetails = new PdsPatientDetails
                 {
                     Title = patientDetails.Title,
-                    GivenNames = patientDetails.GivenNames,
+                    GivenName = patientDetails.GivenName,
                     Surname = patientDetails.Surname,
+                    Gender = patientDetails.Gender,
                     PhoneNumber = patientDetails.PhoneNumber,
                     EmailAddress = patientDetails.EmailAddress,
                     Address = patientDetails.Address,
-                    Postcode = patientDetails.Postcode,
                     NhsNumber = patientDetails.NhsNumber,
-                    DateOfBirth = DateTimeOffset.Parse(patientDetails.DateOfBirth)
+                    DateOfBirth = DateTimeOffset.Parse(patientDetails.DateOfBirth),
+                    DateOfDeath = DateTimeOffset.Parse(patientDetails.DateOfDeath),
+                    RegisteredGpPractice = patientDetails.RegisteredGpPractice
                 };
 
                 fakePatients.Add(pdsPatientDetails);
             }
 
             return fakePatients;
+        }
+
+        virtual internal List<PdsPatientDetails> FilterPatientByDetails(string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string address = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null)
+        {
+            var patients = this.FakePatientDetails.AsQueryable<PdsPatientDetails>();
+
+            if (!string.IsNullOrWhiteSpace(givenName))
+            {
+                patients = patients.Where(patient => patient.GivenName.Contains(givenName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(familyName))
+            {
+                patients = patients.Where(patient => patient.Surname.Contains(familyName));
+            }
+
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                patients = patients.Where(patient => patient.Address.Contains(address));
+            }
+
+            if (!string.IsNullOrWhiteSpace(dateOfBirth))
+            {
+                patients = patients.Where(patient => patient.DateOfBirth.Equals(DateTimeOffset.Parse(dateOfBirth)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(dateOfDeath))
+            {
+                patients = patients.Where(patient => patient.DateOfDeath.Equals(DateTimeOffset.Parse(dateOfDeath)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(registeredGpPractice))
+            {
+                patients = patients.Where(patient => patient.RegisteredGpPractice.Contains(registeredGpPractice));
+            }
+
+            if (!string.IsNullOrWhiteSpace(email))
+            {
+                patients = patients.Where(patient => patient.EmailAddress.Contains(email));
+            }
+
+            if (!string.IsNullOrWhiteSpace(phoneNumber))
+            {
+                patients = patients.Where(patient => patient.PhoneNumber.Contains(phoneNumber));
+            }
+
+            return patients.ToList();
         }
     }
 }

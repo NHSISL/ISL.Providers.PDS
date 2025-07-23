@@ -20,7 +20,7 @@ namespace ISL.Providers.PDS.Abstractions
             string givenName = null,
             string familyName = null,
             string gender = null,
-            string postCode = null,
+            string address = null,
             string dateOfBirth = null,
             string dateOfDeath = null,
             string registeredGpPractice = null,
