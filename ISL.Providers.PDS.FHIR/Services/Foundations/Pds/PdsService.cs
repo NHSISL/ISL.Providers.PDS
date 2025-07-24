@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
 {
-    internal class PdsService : IPdsService
+    internal partial class PdsService : IPdsService
     {
         private readonly IPdsFHIRBroker pdsFHIRBroker;
 
@@ -20,7 +20,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             this.pdsFHIRBroker = pdsFHIRBroker;
         }
 
-        public async ValueTask<PatientBundle> PatientLookupByDetailsAsync(
+        public ValueTask<PatientBundle> PatientLookupByDetailsAsync(
             string givenName = null,
             string familyName = null,
             string gender = null,
@@ -29,29 +29,33 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             string dateOfDeath = null,
             string registeredGpPractice = null,
             string email = null,
-            string phoneNumber = null)
+            string phoneNumber = null) =>
+            TryCatch(async () =>
+            {
+                Bundle bundle = await pdsFHIRBroker.GetNhsNumberAsync(
+                    givenName,
+                    familyName,
+                    gender,
+                    postcode,
+                    dateOfBirth,
+                    dateOfDeath,
+                    registeredGpPractice,
+                    email,
+                    phoneNumber);
+
+                PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
+
+                return patientBundle;
+            });
+
+        public ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber) =>
+        TryCatch(async () =>
         {
-            Bundle bundle = await pdsFHIRBroker.GetNhsNumberAsync(
-                givenName,
-                familyName,
-                gender,
-                postcode,
-                dateOfBirth,
-                dateOfDeath,
-                registeredGpPractice,
-                email,
-                phoneNumber);
+            ValidatePatientLookupByNhsNumberArguments(nhsNumber);
 
-            PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
-
-            return patientBundle;
-        }
-
-        public async ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber)
-        {
             Patient patient = await pdsFHIRBroker.GetPdsPatientDetailsAsync(nhsNumber);
 
             return patient;
-        }
+        });
     }
 }
