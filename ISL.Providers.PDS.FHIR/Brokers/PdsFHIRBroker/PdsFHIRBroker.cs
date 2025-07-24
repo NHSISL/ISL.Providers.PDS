@@ -123,7 +123,6 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
                     new Uri(uriString: pdsFHIRConfiguration.ApiUrl),
             };
 
-            httpClient.DefaultRequestHeaders.Add("X-API-KEY", pdsFHIRConfiguration.ApiKey);
             httpClient.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString());
 
             return httpClient;

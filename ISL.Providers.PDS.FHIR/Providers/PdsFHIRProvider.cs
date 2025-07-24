@@ -10,9 +10,9 @@ using System;
 using Xeptions;
 using ISL.Providers.PDS.FHIR.Models.Providers.Exceptions;
 using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
-using ISL.Providers.PDS.FHIR.Brokers.IdentifierBroker;
 using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
 using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 
 namespace ISL.Providers.PDS.FHIR.Providers
 {
@@ -20,9 +20,9 @@ namespace ISL.Providers.PDS.FHIR.Providers
     {
         private IPdsService pdsService { get; set; }
 
-        public PdsFHIRProvider()
+        public PdsFHIRProvider(PdsFHIRConfigurations configurations)
         {
-            IServiceProvider serviceProvider = RegisterServices();
+            IServiceProvider serviceProvider = RegisterServices(configurations);
             InitializeClients(serviceProvider);
         }
 
@@ -161,12 +161,12 @@ namespace ISL.Providers.PDS.FHIR.Providers
         private void InitializeClients(IServiceProvider serviceProvider) =>
             this.pdsService = serviceProvider.GetRequiredService<IPdsService>();
 
-        private static IServiceProvider RegisterServices()
+        private static IServiceProvider RegisterServices(PdsFHIRConfigurations configurations)
         {
             var serviceCollection = new ServiceCollection()
-                .AddTransient<IIdentifierBroker, IdentifierBroker>()
                 .AddTransient<IPdsFHIRBroker, PdsFHIRBroker>()
-                .AddTransient<IPdsService, PdsService>();
+                .AddTransient<IPdsService, PdsService>()
+                .AddSingleton(configurations);
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
