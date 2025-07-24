@@ -4,17 +4,23 @@
 
 using ISL.Providers.PDS.Abstractions.Models;
 using System.Threading.Tasks;
-using System;
+using Hl7.Fhir.Model;
 
 namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
 {
     internal interface IPdsService
     {
-        ValueTask<PdsResponse> PatientLookupByDetailsAsync(
-            string surname,
-            string postcode,
-            DateTimeOffset dateOfBirth);
+        ValueTask<PatientBundle> PatientLookupByDetailsAsync(
+            string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postcode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null);
 
-        ValueTask<PdsResponse> PatientLookupByNhsNumberAsync(string nhsNumber);
+        ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber);
     }
 }

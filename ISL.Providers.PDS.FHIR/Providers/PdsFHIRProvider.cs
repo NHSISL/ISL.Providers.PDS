@@ -12,6 +12,7 @@ using ISL.Providers.PDS.FHIR.Models.Providers.Exceptions;
 using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
 using ISL.Providers.PDS.FHIR.Brokers.IdentifierBroker;
 using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
+using Hl7.Fhir.Model;
 
 namespace ISL.Providers.PDS.FHIR.Providers
 {
@@ -37,14 +38,29 @@ namespace ISL.Providers.PDS.FHIR.Providers
         /// <exception cref="PdsFHIRProviderDependencyValidationException" />
         /// <exception cref="PdsFHIRProviderDependencyException" />
         /// <exception cref="PdsFHIRProviderServiceException" />
-        public async ValueTask<PdsResponse> PatientLookupByDetailsAsync(
-            string surname,
-            string postcode,
-            DateTimeOffset dateOfBirth)
+        public async ValueTask<PatientBundle> PatientLookupByDetailsAsync(
+            string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string address = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null)
         {
             try
             {
-                return await pdsService.PatientLookupByDetailsAsync(surname, postcode, dateOfBirth);
+                return await pdsService.PatientLookupByDetailsAsync(
+                    givenName,
+                    familyName,
+                    gender,
+                    address,
+                    dateOfBirth,
+                    dateOfDeath,
+                    registeredGpPractice,
+                    email,
+                    phoneNumber);
             }
             catch (PdsValidationException pdsValidationException)
             {
@@ -81,7 +97,7 @@ namespace ISL.Providers.PDS.FHIR.Providers
         /// <exception cref="PdsFHIRProviderDependencyValidationException" />
         /// <exception cref="PdsFHIRProviderDependencyException" />
         /// <exception cref="PdsFHIRProviderServiceException" />
-        public async ValueTask<PdsResponse> PatientLookupByNhsNumberAsync(string nhsNumber)
+        public async ValueTask<Patient> PatientLookupByNhsNumberAsync(string nhsNumber)
         {
             try
             {

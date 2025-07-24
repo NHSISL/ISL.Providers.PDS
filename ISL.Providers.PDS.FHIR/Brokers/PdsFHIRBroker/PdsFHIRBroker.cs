@@ -1,7 +1,12 @@
-﻿using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
-using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR.Responses;
+﻿// ---------------------------------------------------------
+// Copyright (c) North East London ICB. All rights reserved.
+// ---------------------------------------------------------
+
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 using RESTFulSense.Clients;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,34 +25,83 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             httpClient = SetupHttpClient();
             apiClient = SetupApiClient();
         }
-        public async ValueTask<string> GetNhsNumberAsync(string surname, string postcode, DateTimeOffset dateOfBirth)
+        public async ValueTask<Bundle> GetNhsNumberAsync(
+            string givenName = null,
+            string familyName = null,
+            string gender = null,
+            string postcode = null,
+            string dateOfBirth = null,
+            string dateOfDeath = null,
+            string registeredGpPractice = null,
+            string email = null,
+            string phoneNumber = null)
         {
-            string formattedSurname = surname.ToLower();
-            string formattedDateOfBirth = dateOfBirth.ToString("yyyy-MM-dd");
+            var queryParams = new List<string>();
 
-            string route = $"Patient?family={formattedSurname}"
-                + $"&address-postalcode={postcode}"
-                + $"&birthdate=eq{formattedDateOfBirth}";
+            string queryString = string.Join("&", queryParams);
+
+            if (!string.IsNullOrEmpty(givenName)) {
+                var splitGivenNames = string.Join("&",
+                    givenName
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(name => $"given={name}"));
+
+                queryParams.Add(splitGivenNames);
+            }
+
+            if (!string.IsNullOrEmpty(familyName))
+            {
+                queryParams.Add($"family={familyName}");
+            }
+
+            if (!string.IsNullOrEmpty(gender))
+            {
+                queryParams.Add($"gender={gender}");
+            }
+
+            if (!string.IsNullOrEmpty(postcode))
+            {
+                queryParams.Add($"address-postalcode={postcode}");
+            }
+
+            if (!string.IsNullOrEmpty(dateOfBirth))
+            {
+                queryParams.Add($"birthdate=eq{dateOfBirth}");
+            }
+
+            if (!string.IsNullOrEmpty(dateOfDeath))
+            {
+                queryParams.Add($"death-date=eq{dateOfDeath}");
+            }
+
+            if (!string.IsNullOrEmpty(registeredGpPractice))
+            {
+                queryParams.Add($"general-practitioner={registeredGpPractice}");
+            }
+
+            if (!string.IsNullOrEmpty(email))
+            {
+                queryParams.Add($"email={email}");
+            }
+
+            if (!string.IsNullOrEmpty(phoneNumber))
+            {
+                queryParams.Add($"phone={phoneNumber}");
+            }
+
+            string route = $"Patient?{queryString}";
 
             string path = pdsFHIRConfiguration.ApiUrl.EndsWith("/")
                 ? route
                 : $"/{route}";
 
-            var pdsFHIRResponse =
-                await apiClient.GetContentAsync<PdsFHIRPatientSearchResponse>(path);
+            var bundle =
+                await apiClient.GetContentAsync<Bundle>(path);
 
-            string nhsNumber = "0000000000";
-            PdsFHIREntry pdsFHIREntry = pdsFHIRResponse.Entries.FirstOrDefault();
-
-            if (pdsFHIREntry != null)
-            {
-                nhsNumber = pdsFHIREntry.Resource.NhsNumber;
-            }
-
-            return nhsNumber;
+            return bundle;
         }
 
-        public async ValueTask<PdsPatientDetails> GetPdsPatientDetailsAsync(string nhsNumber)
+        public async ValueTask<Patient> GetPdsPatientDetailsAsync(string nhsNumber)
         {
             string route = $"Patient?{nhsNumber}";
 
@@ -55,12 +109,10 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
                 ? route
                 : $"/{route}";
 
-            var pdsFHIRResponse =
-                await apiClient.GetContentAsync<PdsFHIRPatientRetrieveResponse>(path);
+            var patient =
+                await apiClient.GetContentAsync<Patient>(path);
 
-            PdsPatientDetails pdsPatientDetails = new PdsPatientDetails();
-
-            return pdsPatientDetails;
+            return patient;
         }
 
         private HttpClient SetupHttpClient()
@@ -72,6 +124,7 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             };
 
             httpClient.DefaultRequestHeaders.Add("X-API-KEY", pdsFHIRConfiguration.ApiKey);
+            httpClient.DefaultRequestHeaders.Add("X-Request-ID", Guid.NewGuid().ToString());
 
             return httpClient;
         }
