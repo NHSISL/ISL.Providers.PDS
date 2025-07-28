@@ -25,12 +25,13 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             PatientBundle randomResponse = CreateRandomPatientBundle(bundleResponse);
             PatientBundle response = randomResponse;
             PatientBundle expectedResponse = response.DeepClone();
-            var path = $"Patient?family={inputSurname}";
+            var path = $"Patient";
 
             this.wireMockServer
                 .Given(
                     Request.Create()
                         .WithPath(path)
+                        .WithParam("family", inputSurname)
                         .UsingGet()
                         .WithHeader("X-REQUEST-ID", this.pdsFHIRConfigurations.RequestId))
                 .RespondWith(
