@@ -49,7 +49,6 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
                     phoneNumber);
 
                 Bundle bundle = await pdsFHIRBroker.GetPdsPatientDetailsAsync(searchPath);
-
                 PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
 
                 return patientBundle;
@@ -59,9 +58,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
         TryCatch(async () =>
         {
             ValidatePatientLookupByNhsNumberArguments(nhsNumber);
-
             string path = $"{this.pdsFHIRConfigurations.PatientLookupPath}/{nhsNumber}";
-
             Patient patient = await pdsFHIRBroker.GetNhsNumberAsync(path);
 
             return patient;

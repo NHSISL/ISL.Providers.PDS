@@ -116,7 +116,6 @@ namespace ISL.Providers.PDS.FHIR.Tests.Integration
                 }
             };
 
-
             return bundle;
         }
 

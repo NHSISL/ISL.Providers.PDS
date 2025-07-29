@@ -17,7 +17,6 @@ namespace ISL.Providers.PDS.FHIR.Tests.Integration
             // given
             string randomString = GenerateRandom10DigitNumber();
             string inputNhsNumber = randomString.DeepClone();
-
             Patient patientResponse = CreateRandomPatientWithNhsNumber(inputNhsNumber);
             Patient expectedResponse = patientResponse.DeepClone();
 

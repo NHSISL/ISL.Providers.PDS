@@ -16,8 +16,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
         private delegate ValueTask<PatientBundle> ReturningPatientBundleFunction();
         private delegate ValueTask<Patient> ReturningPatientFunction();
 
-        private async ValueTask<PatientBundle> TryCatch(
-            ReturningPatientBundleFunction returningPatientBundleFunction)
+        private async ValueTask<PatientBundle> TryCatch(ReturningPatientBundleFunction returningPatientBundleFunction)
         {
             try
             {
@@ -39,8 +38,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             }
         }
 
-        private async ValueTask<Patient> TryCatch(
-            ReturningPatientFunction returningPatientFunction)
+        private async ValueTask<Patient> TryCatch(ReturningPatientFunction returningPatientFunction)
         {
             try
             {
@@ -62,8 +60,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             }
         }
 
-        private async ValueTask<PdsValidationException> CreateAndLogValidationExceptionAsync(
-            Xeption exception)
+        private async ValueTask<PdsValidationException> CreateAndLogValidationExceptionAsync(Xeption exception)
         {
             var pdsValidationException = new PdsValidationException(
                 message: "PDS validation error occurred, please fix the errors and try again.",
@@ -72,8 +69,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             return pdsValidationException;
         }
 
-        private async ValueTask<PdsServiceException> CreateAndLogServiceExceptionAsync(
-           Xeption exception)
+        private async ValueTask<PdsServiceException> CreateAndLogServiceExceptionAsync(Xeption exception)
         {
             var pdsServiceException = new PdsServiceException(
                 message: "PDS service error occurred, please contact support.",
