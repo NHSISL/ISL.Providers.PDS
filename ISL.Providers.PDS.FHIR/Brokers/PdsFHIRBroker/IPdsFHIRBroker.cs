@@ -2,15 +2,15 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Hl7.Fhir.Model;
 using System.Threading.Tasks;
+using Hl7.Fhir.Model;
 
 namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 {
     internal interface IPdsFHIRBroker
     {
-        ValueTask<Bundle> GetNhsNumberAsync(string path);
+        ValueTask<Patient> GetNhsNumberAsync(string path);
 
-        ValueTask<Patient> GetPdsPatientDetailsAsync(string path);
+        ValueTask<Bundle> GetPdsPatientDetailsAsync(string path);
     }
 }

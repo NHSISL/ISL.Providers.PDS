@@ -25,20 +25,20 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             apiClient = SetupApiClient();
         }
 
-        public async ValueTask<Bundle> GetNhsNumberAsync(string path)
+        public async ValueTask<Patient> GetNhsNumberAsync(string path)
+        {
+            var patient = await apiClient.GetContentAsync<Patient>(path);
+
+            return patient;
+        }
+
+        public async ValueTask<Bundle> GetPdsPatientDetailsAsync(string path)
         {
             string jsonResponse = await apiClient.GetContentStringAsync(path);
             var parser = new FhirJsonParser();
             Bundle bundle = parser.Parse<Bundle>(jsonResponse);
 
             return bundle;
-        }
-
-        public async ValueTask<Patient> GetPdsPatientDetailsAsync(string path)
-        {
-            var patient = await apiClient.GetContentAsync<Patient>(path);
-
-            return patient;
         }
 
         private HttpClient SetupHttpClient()
