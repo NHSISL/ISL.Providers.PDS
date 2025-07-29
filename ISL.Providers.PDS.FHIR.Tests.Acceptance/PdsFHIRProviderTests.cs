@@ -2,16 +2,16 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.FHIR.Mappers;
 using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 using ISL.Providers.PDS.FHIR.Providers;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System;
 using Tynamix.ObjectFiller;
 using WireMock.Server;
-using ISL.Providers.PDS.FHIR.Mappers;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
 {
@@ -36,7 +36,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                 .GetSection("pdsFHIRConfigurations").Get<PdsFHIRConfigurations>();
 
             pdsFHIRConfigurations.ApiUrl = wireMockServer.Url;
-            pdsFHIRConfigurations.RequestId = "a44681a7-7fb4-41ad-b13a-b481da392232";
+            pdsFHIRConfigurations.RequestId = Guid.NewGuid().ToString();
 
             this.pdsFHIRProvider = new PdsFHIRProvider(pdsFHIRConfigurations);
         }

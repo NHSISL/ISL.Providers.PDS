@@ -20,12 +20,12 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             // given
             string randomString = GetRandomString();
             string inputSurname = randomString.DeepClone();
-            
+
             Bundle bundleResponse = CreateRandomBundle(inputSurname);
             PatientBundle randomResponse = CreateRandomPatientBundle(bundleResponse);
             PatientBundle response = randomResponse;
             PatientBundle expectedResponse = response.DeepClone();
-            var path = $"Patient";
+            var path = $"/Patient";
 
             this.wireMockServer
                 .Given(
@@ -33,7 +33,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                         .WithPath(path)
                         .WithParam("family", inputSurname)
                         .UsingGet()
-                        .WithHeader("X-REQUEST-ID", this.pdsFHIRConfigurations.RequestId))
+                .WithHeader("X-REQUEST-ID", this.pdsFHIRConfigurations.RequestId))
                 .RespondWith(
                     Response.Create()
                         .WithSuccess()
@@ -47,6 +47,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                     familyName: inputSurname);
 
             var x = this.wireMockServer.LogEntries;
+
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);
         }

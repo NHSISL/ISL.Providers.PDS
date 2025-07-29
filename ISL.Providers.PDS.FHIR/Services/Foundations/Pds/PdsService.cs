@@ -2,25 +2,27 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
 using ISL.Providers.PDS.FHIR.Mappers;
 using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
-using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
 {
     internal partial class PdsService : IPdsService
     {
         private readonly IPdsFHIRBroker pdsFHIRBroker;
+        private readonly PdsFHIRConfigurations pdsFHIRConfigurations;
 
         public PdsService(IPdsFHIRBroker pdsFHIRBroker, PdsFHIRConfigurations pdsFHIRConfigurations)
         {
             this.pdsFHIRBroker = pdsFHIRBroker;
+            this.pdsFHIRConfigurations = pdsFHIRConfigurations;
         }
 
         public ValueTask<PatientBundle> PatientLookupByDetailsAsync(
@@ -58,7 +60,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
         {
             ValidatePatientLookupByNhsNumberArguments(nhsNumber);
 
-            string path = $"Patient/{nhsNumber}";
+            string path = $"{this.pdsFHIRConfigurations.PatientLookupPath}/{nhsNumber}";
 
             Patient patient = await pdsFHIRBroker.GetPdsPatientDetailsAsync(path);
 
@@ -129,7 +131,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             }
 
             string queryString = string.Join("&", queryParams);
-            string path = $"Patient?{queryString}";
+            string path = $"{pdsFHIRConfigurations.PatientSearchPath}?{queryString}";
 
             return path;
         }

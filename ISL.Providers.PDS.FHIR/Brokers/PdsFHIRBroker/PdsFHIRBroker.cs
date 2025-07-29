@@ -2,12 +2,12 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Hl7.Fhir.Model;
-using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
-using RESTFulSense.Clients;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
+using RESTFulSense.Clients;
 
 namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 {
@@ -23,6 +23,7 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             httpClient = SetupHttpClient();
             apiClient = SetupApiClient();
         }
+
         public async ValueTask<Bundle> GetNhsNumberAsync(string path)
         {
             var bundle = await apiClient.GetContentAsync<Bundle>(path);
@@ -41,12 +42,10 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         {
             var httpClient = new HttpClient()
             {
-                BaseAddress =
-                    new Uri(uriString: pdsFHIRConfiguration.ApiUrl),
+                BaseAddress = new Uri(uriString: pdsFHIRConfiguration.ApiUrl),
             };
 
-            // THIS VALUE IS HARD-CODED FOR NOW FOR TESTING BUT WILL NEED TO BE CHANGED
-            httpClient.DefaultRequestHeaders.Add("X-Request-ID", "a44681a7-7fb4-41ad-b13a-b481da392232");
+            httpClient.DefaultRequestHeaders.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
 
             return httpClient;
         }
