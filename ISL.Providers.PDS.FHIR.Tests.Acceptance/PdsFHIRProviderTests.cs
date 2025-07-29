@@ -36,6 +36,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                 .GetSection("pdsFHIRConfigurations").Get<PdsFHIRConfigurations>();
 
             pdsFHIRConfigurations.ApiUrl = wireMockServer.Url;
+            pdsFHIRConfigurations.RequestId = "a44681a7-7fb4-41ad-b13a-b481da392232";
 
             this.pdsFHIRProvider = new PdsFHIRProvider(pdsFHIRConfigurations);
         }

@@ -22,7 +22,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             
             Patient patientResponse = CreateRandomPatientWithNhsNumber(inputNhsNumber);
             Patient expectedResponse = patientResponse.DeepClone();
-            var path = $"Patient?{inputNhsNumber}";
+            var path = $"Patient/{inputNhsNumber}";
 
             this.wireMockServer
                 .Given(

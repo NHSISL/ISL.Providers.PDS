@@ -18,12 +18,13 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             // Given
             string randomIdentifier = GenerateRandom10DigitNumber();
             string inputNhsNumber = randomIdentifier.DeepClone();
+            string inputPath = GetPathFromRandomStringForNhsSearch(inputNhsNumber);
 
             Patient outputPatient = CreateRandomPatientWithNhsNumber(inputNhsNumber);
             Patient expectedPatient = outputPatient.DeepClone();
 
             this.pdsFHIRBrokerMock.Setup(broker =>
-                broker.GetPdsPatientDetailsAsync(inputNhsNumber))
+                broker.GetPdsPatientDetailsAsync(inputPath))
                 .ReturnsAsync(outputPatient);
 
             // When
@@ -34,7 +35,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             actualPatient.Should().BeEquivalentTo(expectedPatient);
 
             this.pdsFHIRBrokerMock.Verify(broker =>
-                broker.GetPdsPatientDetailsAsync(inputNhsNumber),
+                broker.GetPdsPatientDetailsAsync(inputPath),
                         Times.Once);
 
             this.pdsFHIRBrokerMock.VerifyNoOtherCalls();

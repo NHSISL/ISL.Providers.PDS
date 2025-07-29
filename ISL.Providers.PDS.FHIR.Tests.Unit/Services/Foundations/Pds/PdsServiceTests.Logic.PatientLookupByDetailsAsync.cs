@@ -8,6 +8,7 @@ using ISL.Providers.PDS.Abstractions.Models;
 using Hl7.Fhir.Model;
 using FluentAssertions;
 using Task = System.Threading.Tasks.Task;
+using ISL.Providers.PDS.FHIR.Services.Foundations.Pds;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -19,12 +20,24 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             // Given
             string randomString = GetRandomString();
             string inputSurname = randomString.DeepClone();
+            string outputPath = GetFamilySearchPathFromRandomString(inputSurname);
 
             Bundle outputBundle = CreateRandomBundle(inputSurname);
             PatientBundle expectedPatientBundle = CreateRandomPatientBundle(outputBundle);
 
             this.pdsFHIRBrokerMock.Setup(broker =>
-                broker.GetNhsNumberAsync(
+                broker.GetNhsNumberAsync(outputPath))
+                .ReturnsAsync(outputBundle);
+
+            var pdsServiceMock = new Mock<PdsService>(
+                this.pdsFHIRBrokerMock.Object,
+                this.pdsFHIRConfigurations)
+                {
+                    CallBase = true
+                };
+
+            pdsServiceMock.Setup(service =>
+                service.GetPatientLookupByDetailsPath(
                     null,
                     inputSurname,
                     null,
@@ -34,10 +47,10 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     null,
                     null,
                     null))
-                .ReturnsAsync(outputBundle);
+                .Returns(outputPath);
 
             // When
-            PatientBundle actualPatientBundle = await pdsService
+            PatientBundle actualPatientBundle = await pdsServiceMock.Object
                 .PatientLookupByDetailsAsync(
                     null,
                     inputSurname,
@@ -52,8 +65,8 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             // Then
             actualPatientBundle.Should().BeEquivalentTo(expectedPatientBundle);
 
-            this.pdsFHIRBrokerMock.Verify(broker =>
-                broker.GetNhsNumberAsync(
+            pdsServiceMock.Verify(service =>
+                service.GetPatientLookupByDetailsPath(
                     null,
                     inputSurname,
                     null,
@@ -63,6 +76,10 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     null,
                     null,
                     null),
+                        Times.Once);
+
+            this.pdsFHIRBrokerMock.Verify(broker =>
+                broker.GetNhsNumberAsync(outputPath),
                         Times.Once);
 
             this.pdsFHIRBrokerMock.VerifyNoOtherCalls();

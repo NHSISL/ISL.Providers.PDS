@@ -40,11 +40,13 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                         .WithHeader("Content-Type", "application/json")
                         .WithBodyAsJson(bundleResponse));
 
+
             // when
             PatientBundle actualResponse =
                 await this.pdsFHIRProvider.PatientLookupByDetailsAsync(
                     familyName: inputSurname);
 
+            var x = this.wireMockServer.LogEntries;
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);
         }

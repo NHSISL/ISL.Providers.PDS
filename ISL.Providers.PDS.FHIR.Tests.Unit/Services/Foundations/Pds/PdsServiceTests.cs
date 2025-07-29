@@ -39,6 +39,12 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
 
+        private static string GetFamilySearchPathFromRandomString(string randomString) =>
+            $"Patient?family={randomString}";
+
+        private static string GetPathFromRandomStringForNhsSearch(string randomString) =>
+            $"Patient/{randomString}";
+
         private static string GenerateRandom10DigitNumber()
         {
             Random random = new Random();

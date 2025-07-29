@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Moq;
 using System;
 using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.FHIR.Services.Foundations.Pds;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -32,8 +33,15 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     message: "PDS service error occurred, please contact support.",
                     innerException: failedServicePdsException);
 
-            pdsFHIRBrokerMock.Setup(broker =>
-                broker.GetNhsNumberAsync(
+            var pdsServiceMock = new Mock<PdsService>(
+                this.pdsFHIRBrokerMock.Object,
+                this.pdsFHIRConfigurations)
+            {
+                CallBase = true
+            };
+
+            pdsServiceMock.Setup(service =>
+                service.GetPatientLookupByDetailsPath(
                     null,
                     someString,
                     null,
@@ -43,11 +51,11 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     null,
                     null,
                     null))
-                        .Throws(serviceException);
+                .Throws(serviceException);
 
             // when
             ValueTask<PatientBundle> lookupByDetailsTask =
-                pdsService.PatientLookupByDetailsAsync(
+                pdsServiceMock.Object.PatientLookupByDetailsAsync(
                     null,
                     someString,
                     null,
@@ -66,8 +74,8 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             actualPdsServiceException.Should().BeEquivalentTo(
                 expectedPdsServiceException);
 
-            this.pdsFHIRBrokerMock.Verify(broker =>
-                broker.GetNhsNumberAsync(
+            pdsServiceMock.Verify(service =>
+                service.GetPatientLookupByDetailsPath(
                     null,
                     someString,
                     null,
@@ -77,7 +85,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     null,
                     null,
                     null),
-                        Times.Once());
+                        Times.Once);
 
             this.pdsFHIRBrokerMock.VerifyNoOtherCalls();
         }

@@ -20,6 +20,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             // given
             var serviceException = new Exception();
             string someIdentifierString = GenerateRandom10DigitNumber();
+            string inputPath = GetPathFromRandomStringForNhsSearch(someIdentifierString);
 
             var failedServicePdsException =
                 new FailedPdsServiceException(
@@ -34,7 +35,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 
 
             this.pdsFHIRBrokerMock.Setup(broker =>
-                broker.GetPdsPatientDetailsAsync(someIdentifierString))
+                broker.GetPdsPatientDetailsAsync(inputPath))
                     .Throws(serviceException);
 
             // when
@@ -50,7 +51,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                 expectedPdsServiceException);
 
             this.pdsFHIRBrokerMock.Verify(broker =>
-                broker.GetPdsPatientDetailsAsync(someIdentifierString),
+                broker.GetPdsPatientDetailsAsync(inputPath),
                     Times.Once());
 
             this.pdsFHIRBrokerMock.VerifyNoOtherCalls();
