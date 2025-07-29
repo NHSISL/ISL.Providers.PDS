@@ -6,6 +6,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Hl7.Fhir.Model;
+using Hl7.Fhir.Serialization;
 using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 using RESTFulSense.Clients;
 
@@ -26,7 +27,9 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 
         public async ValueTask<Bundle> GetNhsNumberAsync(string path)
         {
-            var bundle = await apiClient.GetContentAsync<Bundle>(path);
+            string jsonResponse = await apiClient.GetContentStringAsync(path);
+            var parser = new FhirJsonParser();
+            Bundle bundle = parser.Parse<Bundle>(jsonResponse);
 
             return bundle;
         }

@@ -48,7 +48,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
                     email,
                     phoneNumber);
 
-                Bundle bundle = await pdsFHIRBroker.GetNhsNumberAsync(searchPath);
+                Bundle bundle = await pdsFHIRBroker.GetPdsPatientDetailsAsync(searchPath);
 
                 PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
 
@@ -62,7 +62,7 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
 
             string path = $"{this.pdsFHIRConfigurations.PatientLookupPath}/{nhsNumber}";
 
-            Patient patient = await pdsFHIRBroker.GetPdsPatientDetailsAsync(path);
+            Patient patient = await pdsFHIRBroker.GetNhsNumberAsync(path);
 
             return patient;
         });
