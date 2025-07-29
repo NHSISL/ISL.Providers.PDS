@@ -18,7 +18,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
     {
         private readonly IFakeFHIRProvider fakeFHIRProvider;
         private readonly IConfiguration configuration;
-        private readonly List<FakeFHIRProviderPatientDetails> fakeFHIRPatientDetails;
 
         public PdsServiceTests()
         {
