@@ -10,7 +10,6 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
     internal interface IPdsFHIRBroker
     {
         ValueTask<Patient> GetNhsNumberAsync(string path);
-
         ValueTask<Bundle> GetPdsPatientDetailsAsync(string path);
     }
 }

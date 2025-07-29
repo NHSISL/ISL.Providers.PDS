@@ -29,7 +29,6 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         {
             string jsonResponse = await apiClient.GetContentStringAsync(path);
             var parser = new FhirJsonParser();
-
             Patient patient = parser.Parse<Patient>(jsonResponse);
 
             return patient;
