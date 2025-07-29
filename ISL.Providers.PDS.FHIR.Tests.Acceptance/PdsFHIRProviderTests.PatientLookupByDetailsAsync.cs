@@ -35,7 +35,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                         .WithPath(path)
                         .WithParam("family", inputSurname)
                         .UsingGet()
-                .WithHeader("X-REQUEST-ID", this.pdsFHIRConfigurations.RequestId))
+                        .WithHeader("X-REQUEST-ID", this.pdsFHIRConfigurations.RequestId))
                 .RespondWith(
                     Response.Create()
                         .WithSuccess()
@@ -46,8 +46,6 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             PatientBundle actualResponse =
                 await this.pdsFHIRProvider.PatientLookupByDetailsAsync(
                     familyName: inputSurname);
-
-            var x = this.wireMockServer.LogEntries;
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);

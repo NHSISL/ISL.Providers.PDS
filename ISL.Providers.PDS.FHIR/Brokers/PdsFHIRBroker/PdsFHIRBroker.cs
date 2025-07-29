@@ -27,7 +27,10 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 
         public async ValueTask<Patient> GetNhsNumberAsync(string path)
         {
-            var patient = await apiClient.GetContentAsync<Patient>(path);
+            string jsonResponse = await apiClient.GetContentStringAsync(path);
+            var parser = new FhirJsonParser();
+
+            Patient patient = parser.Parse<Patient>(jsonResponse);
 
             return patient;
         }

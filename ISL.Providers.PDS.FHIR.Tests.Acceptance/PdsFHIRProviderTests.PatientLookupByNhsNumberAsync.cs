@@ -22,7 +22,9 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             
             Patient patientResponse = CreateRandomPatientWithNhsNumber(inputNhsNumber);
             Patient expectedResponse = patientResponse.DeepClone();
-            var path = $"Patient/{inputNhsNumber}";
+            var path = $"/Patient/{inputNhsNumber}";
+            var fhirSerializer = new Hl7.Fhir.Serialization.FhirJsonSerializer();
+            string patientResponseString = fhirSerializer.SerializeToString(patientResponse);
 
             this.wireMockServer
                 .Given(
@@ -34,7 +36,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
                     Response.Create()
                         .WithSuccess()
                         .WithHeader("Content-Type", "application/json")
-                        .WithBodyAsJson(patientResponse));
+                        .WithBody(patientResponseString));
 
             // when
             Patient actualResponse =

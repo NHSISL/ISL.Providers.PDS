@@ -28,7 +28,10 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
             this.pdsFHIRConfigurations = new PdsFHIRConfigurations
             {
                 ApiKey = GetRandomString(),
-                ApiUrl = GetRandomString()
+                ApiUrl = GetRandomString(),
+                PatientLookupPath = GetRandomString(),
+                PatientSearchPath = GetRandomString(),
+                RequestId = GetRandomString()
             };
 
             this.pdsService = new PdsService(
@@ -42,8 +45,8 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
         private static string GetFamilySearchPathFromRandomString(string randomString) =>
             $"Patient?family={randomString}";
 
-        private static string GetPathFromRandomStringForNhsSearch(string randomString) =>
-            $"Patient/{randomString}";
+        private string GetPathFromRandomStringForNhsSearch(string randomString) =>
+            $"{pdsFHIRConfigurations.PatientLookupPath}/{randomString}";
 
         private static string GenerateRandom10DigitNumber()
         {

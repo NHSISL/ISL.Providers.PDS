@@ -44,6 +44,9 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
         private static string GetRandomString() =>
             new MnemonicString().GetValue();
 
+        private static DateTimeOffset GetRandomDateTimeOffset() =>
+            new DateTimeRange(earliestDate: new DateTime()).GetValue();
+
         private static string GenerateRandom10DigitNumber()
         {
             Random random = new Random();
@@ -72,7 +75,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
 
             patient.Name = new List<HumanName> { nameFiller.Create() };
             patient.Gender = AdministrativeGender.Male;
-            patient.BirthDate = GetRandomString();
+            patient.BirthDate = GetRandomDateTimeOffset().ToString("yyyy-MM-dd");
 
             return patient;
         }
@@ -97,7 +100,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             patient.Id = nhsNumber;
             patient.Name = new List<HumanName> { nameFiller.Create() };
             patient.Gender = AdministrativeGender.Male;
-            patient.BirthDate = GetRandomString();
+            patient.BirthDate = GetRandomDateTimeOffset().ToString("yyyy-MM-dd");
 
             return patient;
         }

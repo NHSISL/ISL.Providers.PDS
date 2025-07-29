@@ -35,7 +35,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 
 
             this.pdsFHIRBrokerMock.Setup(broker =>
-                broker.GetPdsPatientDetailsAsync(inputPath))
+                broker.GetNhsNumberAsync(inputPath))
                     .Throws(serviceException);
 
             // when
@@ -51,7 +51,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                 expectedPdsServiceException);
 
             this.pdsFHIRBrokerMock.Verify(broker =>
-                broker.GetPdsPatientDetailsAsync(inputPath),
+                broker.GetNhsNumberAsync(inputPath),
                     Times.Once());
 
             this.pdsFHIRBrokerMock.VerifyNoOtherCalls();
