@@ -4,9 +4,9 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<Title>ISL.Providers.PDS.FHIR</Title>
-		<Product>ISL.Providers.PDS.FHIR</Product>
-		<PackageId>ISL.Providers.PDS.FHIR</PackageId>
+		<Title>ISL.Providers.PDS.FakeFHIR</Title>
+		<Product>ISL.Providers.PDS.FakeFHIR</Product>
+		<PackageId>ISL.Providers.PDS.FakeFHIR</PackageId>
 		<Authors>North East London ICB</Authors>
 		<Company>North East London ICB</Company>
 		<Description>ISL.Providers.PDS.FHIR provides a fake implementation the PDS FHIR Api for testing purposes.</Description>
@@ -21,9 +21,9 @@
 			This provider is an implementation that will provide fake responses based config for testing purposes.
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<Version>1.0.0.0</Version>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.0.0.0</FileVersion>
+		<Version>1.0.0.1</Version>
+		<AssemblyVersion>1.0.0.1</AssemblyVersion>
+		<FileVersion>1.0.0.1</FileVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
