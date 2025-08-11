@@ -137,7 +137,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         ElementId = "456",
                         Use = Address.AddressUse.Home,
                         Line = pdsPatientDetails.Address.Split(",").SkipLast(1),
-                        PostalCode = pdsPatientDetails.Address.Split(",").LastOrDefault(),
+                        PostalCode = pdsPatientDetails.Address.Split(",").LastOrDefault().Trim(),
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime),
                         Extension = new List<Extension>
                         {
