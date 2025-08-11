@@ -87,15 +87,15 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
                 PdsPatientDetails pdsPatientDetails = new PdsPatientDetails
                 {
                     Title = patientDetails.Title,
-                    GivenName = patientDetails.GivenName,
+                    GivenNames = patientDetails.GivenNames,
                     Surname = patientDetails.Surname,
                     Gender = patientDetails.Gender,
                     PhoneNumber = patientDetails.PhoneNumber,
-                    EmailAddress = patientDetails.EmailAddress,
+                    EmailAddress = patientDetails.Email,
                     Address = patientDetails.Address,
                     NhsNumber = patientDetails.NhsNumber,
-                    DateOfBirth = DateTimeOffset.Parse(patientDetails.DateOfBirth),
-                    DateOfDeath = DateTimeOffset.Parse(patientDetails.DateOfDeath),
+                    DateOfBirth = patientDetails.DateOfBirth,
+                    DateOfDeath = patientDetails.DateOfDeath,
                     RegisteredGpPractice = patientDetails.RegisteredGpPractice
                 };
 
@@ -121,7 +121,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 
             if (!string.IsNullOrWhiteSpace(givenName))
             {
-                patients = patients.Where(patient => patient.GivenName.Contains(givenName));
+                patients = patients.Where(patient => patient.GivenNames.Contains(givenName));
             }
 
             if (!string.IsNullOrWhiteSpace(familyName))

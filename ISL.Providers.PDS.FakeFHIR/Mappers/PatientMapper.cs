@@ -83,7 +83,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         ElementId = "123",
                         Use = HumanName.NameUse.Usual,
                         Family = pdsPatientDetails.Surname,
-                        Given = pdsPatientDetails.GivenName.Split(" "),
+                        Given = pdsPatientDetails.GivenNames,
                         Prefix = new[] { pdsPatientDetails.Title },
                         Suffix = new[] { "MBE" },
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime)
@@ -136,7 +136,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                     {
                         ElementId = "456",
                         Use = Address.AddressUse.Home,
-                        Line = pdsPatientDetails.Address.Split(","),
+                        Line = pdsPatientDetails.Address.Split(",").SkipLast(1),
                         PostalCode = pdsPatientDetails.Address.Split(",").LastOrDefault(),
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime),
                         Extension = new List<Extension>
