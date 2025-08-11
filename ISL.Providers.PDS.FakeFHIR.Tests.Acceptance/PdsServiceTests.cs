@@ -40,11 +40,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
             PdsPatientDetails pdsPatientDetails = new PdsPatientDetails
             {
                 Title = patientDetails.Title,
-                GivenName = patientDetails.GivenName,
+                GivenNames = patientDetails.GivenNames,
                 Surname = patientDetails.Surname,
                 Gender = patientDetails.Gender,
                 PhoneNumber = patientDetails.PhoneNumber,
-                EmailAddress = patientDetails.EmailAddress,
+                EmailAddress = patientDetails.Email,
                 Address = patientDetails.Address,
                 NhsNumber = patientDetails.NhsNumber,
                 DateOfBirth = DateTimeOffset.Parse(patientDetails.DateOfBirth),

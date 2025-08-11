@@ -76,7 +76,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
             filler.Setup()
                 .OnType<DateTimeOffset>().Use(dateTimeOffset)
-                .OnProperty(pdsPatientDetails => pdsPatientDetails.GivenName).Use(givenName);
+                .OnProperty(pdsPatientDetails => pdsPatientDetails.GivenNames).Use(new List<string> { givenName });
 
             return filler;
         }
@@ -97,7 +97,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             List<PdsPatientDetails> patientDetails, 
             string givenName)
         {
-            return patientDetails.Where(patientDetails => patientDetails.GivenName.Contains(givenName)).ToList();
+            return patientDetails.Where(patientDetails => patientDetails.GivenNames.Contains(givenName)).ToList();
         }
 
         private static PatientBundle CreatePatientBundleFromPatientDetails(List<PdsPatientDetails> patientDetailsList)
