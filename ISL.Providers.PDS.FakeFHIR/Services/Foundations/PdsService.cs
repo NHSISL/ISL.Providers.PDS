@@ -94,8 +94,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
                     EmailAddress = patientDetails.Email,
                     Address = patientDetails.Address,
                     NhsNumber = patientDetails.NhsNumber,
-                    DateOfBirth = DateTimeOffset.Parse(patientDetails.DateOfBirth),
-                    DateOfDeath = DateTimeOffset.Parse(patientDetails.DateOfDeath),
+                    DateOfBirth = patientDetails.DateOfBirth,
+                    DateOfDeath = patientDetails.DateOfDeath,
                     RegisteredGpPractice = patientDetails.RegisteredGpPractice
                 };
 

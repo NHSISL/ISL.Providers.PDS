@@ -50,8 +50,11 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 
         private static Filler<FakeFHIRProviderConfigurations> CreateConfigurationsFiller()
         {
+            DateTimeOffset dateTimeOffset = DateTimeOffset.UtcNow;
             var filler = new Filler<FakeFHIRProviderConfigurations>();
-            filler.Setup();
+
+            filler.Setup()
+                .OnType<DateTimeOffset>().Use(dateTimeOffset);
 
             return filler;
         }
