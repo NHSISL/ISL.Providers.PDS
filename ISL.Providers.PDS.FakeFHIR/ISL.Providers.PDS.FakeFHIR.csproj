@@ -21,9 +21,9 @@
 			This provider is an implementation that will provide fake responses based config for testing purposes.
 		</PackageReleaseNotes>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<Version>1.0.0.2</Version>
-		<AssemblyVersion>1.0.0.2</AssemblyVersion>
-		<FileVersion>1.0.0.2</FileVersion>
+		<Version>1.0.0.3</Version>
+		<AssemblyVersion>1.0.0.3</AssemblyVersion>
+		<FileVersion>1.0.0.3</FileVersion>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
 		<IsPackable>true</IsPackable>
