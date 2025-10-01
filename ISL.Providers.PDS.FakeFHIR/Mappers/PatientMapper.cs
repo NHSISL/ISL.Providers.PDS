@@ -15,6 +15,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
         {
             var periodStartFhirDateTime = new FhirDateTime(pdsPatientDetails.DateOfBirth);
             var periodEndFhirDateTime = new FhirDateTime(pdsPatientDetails.DateOfDeath);
+            var metaSecurityCode = pdsPatientDetails.IsSensitive ? "R" : "U";
+            var metaSecurityDisplay = pdsPatientDetails.IsSensitive ? "restricted" : "unrestricted";
 
             var patient = new Patient
             {
@@ -40,8 +42,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                     {
                         new Coding(
                             system: "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
-                            code: "U", 
-                            display: "unrestricted")
+                            code: metaSecurityCode,
+                            display: metaSecurityDisplay)
                     }
                 },
 
@@ -62,8 +64,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                                         Coding = new List<Coding>
                                         {
                                             new Coding(
-                                                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus", 
-                                                code: "01", 
+                                                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                                                code: "01",
                                                 display: "Number present and verified")
                                             {
                                                 Version = "1.0.0"
@@ -93,8 +95,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                 Telecom = new List<ContactPoint>
                 {
                     new ContactPoint(
-                        system: ContactPoint.ContactPointSystem.Phone, 
-                        use: ContactPoint.ContactPointUse.Home, 
+                        system: ContactPoint.ContactPointSystem.Phone,
+                        use: ContactPoint.ContactPointUse.Home,
                         value: pdsPatientDetails.PhoneNumber)
                     {
                         ElementId = "789",
@@ -102,8 +104,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                     },
 
                     new ContactPoint(
-                        system: ContactPoint.ContactPointSystem.Email, 
-                        use: ContactPoint.ContactPointUse.Home, 
+                        system: ContactPoint.ContactPointSystem.Email,
+                        use: ContactPoint.ContactPointUse.Home,
                         value: pdsPatientDetails.EmailAddress)
                     {
                         ElementId = "790",
@@ -111,8 +113,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                     },
 
                     new ContactPoint(
-                        system : ContactPoint.ContactPointSystem.Other, 
-                        use : ContactPoint.ContactPointUse.Home, 
+                        system : ContactPoint.ContactPointSystem.Other,
+                        use : ContactPoint.ContactPointUse.Home,
                         value : pdsPatientDetails.PhoneNumber)
                     {
                         ElementId = "OC789",
@@ -123,7 +125,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                                 url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-OtherContactSystem",
 
                                 value: new Coding(
-                                    system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-OtherContactSystem", 
+                                    system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-OtherContactSystem",
                                     code: "textphone",
                                     display: "Minicom (Textphone)"))
                         }
@@ -156,16 +158,16 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         Relationship = new List<CodeableConcept>
                         {
                             new CodeableConcept(
-                                system: "http://terminology.hl7.org/CodeSystem/v2-0131", 
-                                code: "C", 
+                                system: "http://terminology.hl7.org/CodeSystem/v2-0131",
+                                code: "C",
                                 text: "Emergency Contact")
                         },
 
                         Telecom = new List<ContactPoint>
                         {
                             new ContactPoint(
-                                system: ContactPoint.ContactPointSystem.Phone, 
-                                use: null, 
+                                system: ContactPoint.ContactPointSystem.Phone,
+                                use: null,
                                 value: pdsPatientDetails.PhoneNumber)
                         }
                     }
@@ -218,16 +220,16 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
         {
             return new Extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
                 new FhirString(valueString))
-                {
-                    Extension = new List<Extension>
+            {
+                Extension = new List<Extension>
                     {
                         new Extension("type", new Coding(
-                            system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType", 
+                            system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
                             code: typeCode)),
 
                         new Extension("value", new FhirString(valueString))
                     }
-                };
+            };
         }
     }
 }

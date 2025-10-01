@@ -20,5 +20,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Models
         public DateTimeOffset DateOfBirth { get; set; }
         public DateTimeOffset DateOfDeath { get; set; }
         public string RegisteredGpPractice { get; set; } = string.Empty;
+        public bool IsSensitive { get; set; }
     }
 }

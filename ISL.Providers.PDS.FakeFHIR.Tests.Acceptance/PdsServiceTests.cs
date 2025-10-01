@@ -8,7 +8,6 @@ using ISL.Providers.PDS.FakeFHIR.Mappers;
 using ISL.Providers.PDS.FakeFHIR.Models;
 using ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,7 +48,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
                 NhsNumber = patientDetails.NhsNumber,
                 DateOfBirth = patientDetails.DateOfBirth,
                 DateOfDeath = patientDetails.DateOfDeath,
-                RegisteredGpPractice = patientDetails.RegisteredGpPractice
+                RegisteredGpPractice = patientDetails.RegisteredGpPractice,
+                IsSensitive = patientDetails.IsSensitive
             };
 
             return pdsPatientDetails;

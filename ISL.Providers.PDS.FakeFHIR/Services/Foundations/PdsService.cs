@@ -96,7 +96,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
                     NhsNumber = patientDetails.NhsNumber,
                     DateOfBirth = patientDetails.DateOfBirth,
                     DateOfDeath = patientDetails.DateOfDeath,
-                    RegisteredGpPractice = patientDetails.RegisteredGpPractice
+                    RegisteredGpPractice = patientDetails.RegisteredGpPractice,
+                    IsSensitive = patientDetails.IsSensitive
                 };
 
                 fakePatients.Add(pdsPatientDetails);

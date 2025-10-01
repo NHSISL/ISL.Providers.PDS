@@ -17,14 +17,16 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
     public partial class PdsServiceTests
     {
         [Fact]
-        public async Task ShouldPatientLookupByDetailsAsync()
+        public async Task ShouldPatientLookupByDetailsWithPatientsThatAreNotMarkedAsSensitiveAsync()
         {
             // given
             string randomString = GetRandomString();
             string inputSearchString = randomString.DeepClone();
 
-            List<PdsPatientDetails> randomPdsPatientDetails = 
+            List<PdsPatientDetails> randomPdsPatientDetails =
                 CreateRandomPdsPatientDetails(inputSearchString).ToList();
+
+            randomPdsPatientDetails.ForEach(details => details.IsSensitive = false);
 
             List<PdsPatientDetails> filteredPdsPatientDetails =
                 GetFilteredPdsPatientDetails(randomPdsPatientDetails, inputSearchString);
@@ -34,8 +36,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
             PatientBundle expectedResponse = output.DeepClone();
 
             var pdsServiceMock = new Mock<PdsService>(this.fakeFHIRProviderConfiguration)
-            { 
-                CallBase = true 
+            {
+                CallBase = true
             };
 
             pdsServiceMock.Setup(service =>
@@ -61,16 +63,87 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
                 .PatientLookupByDetailsAsync(
                     inputSearchString,
                     null,
-                    null, 
-                    null, 
-                    null, 
-                    null, 
-                    null, 
-                    null, 
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     null);
 
             // then
             actualResponse.Should().BeEquivalentTo(expectedResponse);
+
+            foreach (var patient in actualResponse.Patients)
+            {
+                patient.Meta.Security.First().Code.Should().Be("U");
+                patient.Meta.Security.First().Display.Should().Be("unrestricted");
+            }
+        }
+
+        [Fact]
+        public async Task ShouldPatientLookupByDetailsWithPatientsThatAreMarkedAsSensitiveAsync()
+        {
+            // given
+            string randomString = GetRandomString();
+            string inputSearchString = randomString.DeepClone();
+
+            List<PdsPatientDetails> randomPdsPatientDetails =
+                CreateRandomPdsPatientDetails(inputSearchString).ToList();
+
+            randomPdsPatientDetails.ForEach(details => details.IsSensitive = true);
+
+            List<PdsPatientDetails> filteredPdsPatientDetails =
+                GetFilteredPdsPatientDetails(randomPdsPatientDetails, inputSearchString);
+
+            PatientBundle randomPatientBundle = CreatePatientBundleFromPatientDetails(filteredPdsPatientDetails);
+            PatientBundle output = randomPatientBundle.DeepClone();
+            PatientBundle expectedResponse = output.DeepClone();
+
+            var pdsServiceMock = new Mock<PdsService>(this.fakeFHIRProviderConfiguration)
+            {
+                CallBase = true
+            };
+
+            pdsServiceMock.Setup(service =>
+                service.GetFakePatientDetails())
+                    .Returns(randomPdsPatientDetails);
+
+            pdsServiceMock.Setup(service =>
+                service.FilterPatientByDetails(
+                    randomPdsPatientDetails,
+                    inputSearchString,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null))
+                        .Returns(filteredPdsPatientDetails);
+
+            // when
+            PatientBundle actualResponse = await pdsServiceMock.Object
+                .PatientLookupByDetailsAsync(
+                    inputSearchString,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null);
+
+            // then
+            actualResponse.Should().BeEquivalentTo(expectedResponse);
+
+            foreach (var patient in actualResponse.Patients)
+            {
+                patient.Meta.Security.First().Code.Should().Be("R");
+                patient.Meta.Security.First().Display.Should().Be("restricted");
+            }
         }
     }
 }

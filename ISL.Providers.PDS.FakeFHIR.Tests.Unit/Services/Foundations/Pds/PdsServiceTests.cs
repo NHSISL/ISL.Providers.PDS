@@ -2,16 +2,16 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using KellermanSoftware.CompareNetObjects;
-using System;
-using Tynamix.ObjectFiller;
-using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
-using ISL.Providers.PDS.Abstractions.Models;
 using Hl7.Fhir.Model;
-using System.Collections.Generic;
+using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Mappers;
 using ISL.Providers.PDS.FakeFHIR.Models;
+using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
+using KellermanSoftware.CompareNetObjects;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Tynamix.ObjectFiller;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -97,7 +97,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Services.Foundations.Pds
         }
 
         private static List<PdsPatientDetails> GetFilteredPdsPatientDetails(
-            List<PdsPatientDetails> patientDetails, 
+            List<PdsPatientDetails> patientDetails,
             string givenName)
         {
             return patientDetails.Where(patientDetails => patientDetails.GivenNames.Contains(givenName)).ToList();
