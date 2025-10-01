@@ -20,5 +20,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Models
         public string Email { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
         public string RegisteredGpPractice { get; set; } = string.Empty;
+        public bool IsSensitive { get; set; }
     }
 }
