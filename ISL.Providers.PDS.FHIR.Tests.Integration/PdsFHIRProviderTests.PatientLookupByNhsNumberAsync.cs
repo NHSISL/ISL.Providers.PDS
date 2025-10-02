@@ -15,7 +15,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Integration
         public async Task ShouldPatientLookupByNhsNumberAsync()
         {
             // given
-            string randomString = GenerateRandom10DigitNumber();
+            string randomString = "9449304424";
             string inputNhsNumber = randomString.DeepClone();
             Patient patientResponse = CreateRandomPatientWithNhsNumber(inputNhsNumber);
             Patient expectedResponse = patientResponse.DeepClone();
