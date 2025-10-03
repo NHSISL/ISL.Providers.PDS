@@ -32,10 +32,15 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         {
             string requestUri = $"{pdsFHIRConfiguration.ApiUrl}{path}";
             string accessToken = await GetAccessTokenAsync();
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
-            httpClient.DefaultRequestHeaders.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
-            string jsonResponse = await httpClient.GetStringAsync(requestUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+            request.Headers.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
+            var response = await httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string jsonResponse = await response.Content.ReadAsStringAsync();
             var parser = new FhirJsonParser();
             Patient patient = parser.Parse<Patient>(jsonResponse);
 
@@ -46,10 +51,15 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         {
             string requestUri = $"{pdsFHIRConfiguration.ApiUrl}{path}";
             string accessToken = await GetAccessTokenAsync();
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
-            httpClient.DefaultRequestHeaders.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
-            string jsonResponse = await httpClient.GetStringAsync(requestUri);
+            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+            request.Headers.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+
+            request.Headers.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
+            var response = await httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string jsonResponse = await response.Content.ReadAsStringAsync();
             var parser = new FhirJsonParser();
             Bundle bundle = parser.Parse<Bundle>(jsonResponse);
 
@@ -59,6 +69,7 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         private HttpClient SetupHttpClient()
         {
             var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
 
             return httpClient;
         }

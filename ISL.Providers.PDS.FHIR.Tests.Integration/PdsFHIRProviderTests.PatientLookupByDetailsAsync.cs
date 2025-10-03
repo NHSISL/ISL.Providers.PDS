@@ -13,12 +13,16 @@ namespace ISL.Providers.PDS.FHIR.Tests.Integration
         public async Task ShouldPatientLookupByDetailsAsync()
         {
             // given
-            string inputSurname = "Anderton";
+            string inputSurname = "Jones26th";
+            string inputPostcode = "EN3 7DG";
+            string inputDateOfBirth = "1997-01-02";
 
             // when
             PatientBundle actualResponse =
                 await this.pdsFHIRProvider.PatientLookupByDetailsAsync(
-                    familyName: inputSurname);
+                    familyName: inputSurname,
+                    postcode: inputPostcode,
+                    dateOfBirth: inputDateOfBirth);
         }
     }
 }
