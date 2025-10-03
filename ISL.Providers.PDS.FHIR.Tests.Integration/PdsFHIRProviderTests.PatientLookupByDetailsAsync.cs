@@ -2,7 +2,6 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using ISL.Providers.PDS.Abstractions.Models;
 using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Integration
@@ -18,11 +17,10 @@ namespace ISL.Providers.PDS.FHIR.Tests.Integration
             string inputDateOfBirth = "1997-01-02";
 
             // when
-            PatientBundle actualResponse =
-                await this.pdsFHIRProvider.PatientLookupByDetailsAsync(
-                    familyName: inputSurname,
-                    postcode: inputPostcode,
-                    dateOfBirth: inputDateOfBirth);
+            await this.pdsFHIRProvider.PatientLookupByDetailsAsync(
+                familyName: inputSurname,
+                postcode: inputPostcode,
+                dateOfBirth: inputDateOfBirth);
         }
     }
 }

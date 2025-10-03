@@ -19,7 +19,6 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             // given
             string randomString = GenerateRandom10DigitNumber();
             string inputNhsNumber = randomString.DeepClone();
-
             Patient patientResponse = CreateRandomPatientWithNhsNumber(inputNhsNumber);
             Patient expectedResponse = patientResponse.DeepClone();
             var path = $"/Patient/{inputNhsNumber}";

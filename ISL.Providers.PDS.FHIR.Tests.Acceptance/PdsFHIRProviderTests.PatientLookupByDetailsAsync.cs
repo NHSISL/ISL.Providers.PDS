@@ -20,7 +20,6 @@ namespace ISL.Providers.PDS.FHIR.Tests.Acceptance
             // given
             string randomString = GetRandomString();
             string inputSurname = randomString.DeepClone();
-
             Bundle bundleResponse = CreateRandomBundle(inputSurname);
             PatientBundle randomResponse = CreateRandomPatientBundle(bundleResponse);
             PatientBundle response = randomResponse;

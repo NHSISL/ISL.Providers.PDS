@@ -95,10 +95,8 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 
             var response = await httpClient.PostAsync(pdsFHIRConfiguration.AuthorisationUrl, content);
             response.EnsureSuccessStatusCode();
-
             var json = await response.Content.ReadAsStringAsync();
             using var doc = System.Text.Json.JsonDocument.Parse(json);
-
             accessToken = doc.RootElement.GetProperty("access_token").GetString();
             var expiresIn = int.Parse(doc.RootElement.GetProperty("expires_in").GetString());
             tokenExpiry = DateTimeOffset.UtcNow.AddSeconds(expiresIn - 30);
