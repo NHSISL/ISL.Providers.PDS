@@ -6,41 +6,34 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
 using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 using Microsoft.IdentityModel.Tokens;
+using RESTFulSense.Clients;
 
 namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 {
     internal class PdsFHIRBroker : IPdsFHIRBroker
     {
         private readonly PdsFHIRConfigurations pdsFHIRConfiguration;
-        private readonly HttpClient httpClient;
+        private IRESTFulApiFactoryClient? apiClient = null;
         private string accessToken = string.Empty;
         private DateTimeOffset tokenExpiry = DateTimeOffset.MinValue;
 
         public PdsFHIRBroker(PdsFHIRConfigurations pdsFHIRConfiguration)
         {
             this.pdsFHIRConfiguration = pdsFHIRConfiguration;
-            httpClient = SetupHttpClient();
+            apiClient = null;
         }
 
         public async ValueTask<Patient> GetNhsNumberAsync(string path)
         {
             string requestUri = $"{pdsFHIRConfiguration.ApiUrl}{path}";
-            string accessToken = await GetAccessTokenAsync();
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-
-            request.Headers.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-
-            request.Headers.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
-            var response = await httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string jsonResponse = await response.Content.ReadAsStringAsync();
+            string jsonResponse = await GetAsync<string>(requestUri);
             var parser = new FhirJsonParser();
             Patient patient = parser.Parse<Patient>(jsonResponse);
 
@@ -50,58 +43,59 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         public async ValueTask<Bundle> GetPdsPatientDetailsAsync(string path)
         {
             string requestUri = $"{pdsFHIRConfiguration.ApiUrl}{path}";
-            string accessToken = await GetAccessTokenAsync();
-            var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-
-            request.Headers.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-
-            request.Headers.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
-            var response = await httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string jsonResponse = await response.Content.ReadAsStringAsync();
+            string jsonResponse = await GetAsync<string>(requestUri);
             var parser = new FhirJsonParser();
             Bundle bundle = parser.Parse<Bundle>(jsonResponse);
 
             return bundle;
         }
 
-        private HttpClient SetupHttpClient()
+        private async ValueTask<T> GetAsync<T>(string relativeUrl)
         {
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
-
-            return httpClient;
-        }
-
-        private async Task<string> GetAccessTokenAsync()
-        {
-            if (!string.IsNullOrEmpty(accessToken) && DateTimeOffset.UtcNow < tokenExpiry)
+            if (apiClient is null || DateTimeOffset.UtcNow >= tokenExpiry)
             {
-                return accessToken;
+                await SetupApiClient();
             }
 
-            var assertion = CreateClientAssertion();
-
-            var content = new FormUrlEncodedContent(new[]
+            if (apiClient is null)
             {
+                throw new InvalidOperationException("Failed to setup API client");
+            }
+
+            if (typeof(T) == typeof(string))
+            {
+                return (T)(object)await this.apiClient.GetContentStringAsync(relativeUrl);
+            }
+            else
+            {
+                return await this.apiClient.GetContentAsync<T>(relativeUrl);
+            }
+        }
+
+        private async ValueTask GetAccessTokenAsync()
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                var assertion = CreateClientAssertion();
+
+                var content = new FormUrlEncodedContent(new[]
+                {
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
 
                 new KeyValuePair<string, string>("client_assertion_type",
                     "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
 
                 new KeyValuePair<string, string>("client_assertion", assertion)
-            });
+                });
 
-            var response = await httpClient.PostAsync(pdsFHIRConfiguration.AuthorisationUrl, content);
-            response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            using var doc = System.Text.Json.JsonDocument.Parse(json);
-            accessToken = doc.RootElement.GetProperty("access_token").GetString();
-            var expiresIn = int.Parse(doc.RootElement.GetProperty("expires_in").GetString());
-            tokenExpiry = DateTimeOffset.UtcNow.AddSeconds(expiresIn - 30);
-
-            return accessToken;
+                var response = await httpClient.PostAsync(pdsFHIRConfiguration.AuthorisationUrl, content);
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                using var doc = System.Text.Json.JsonDocument.Parse(json);
+                accessToken = doc.RootElement.GetProperty("access_token").GetString();
+                var expiresIn = int.Parse(doc.RootElement.GetProperty("expires_in").GetString());
+                tokenExpiry = DateTimeOffset.UtcNow.AddSeconds(expiresIn - 30);
+            }
         }
 
         private RsaSecurityKey LoadPrivateKey()
@@ -133,6 +127,22 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             var handler = new JwtSecurityTokenHandler();
 
             return handler.WriteToken(token);
+        }
+
+        private async ValueTask SetupApiClient()
+        {
+            await GetAccessTokenAsync();
+
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Accept", "application/fhir+json");
+            httpClient.DefaultRequestHeaders.Add("X-Request-ID", pdsFHIRConfiguration.RequestId);
+
+            httpClient.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue(
+                    scheme: "Bearer",
+                    parameter: this.accessToken ?? "");
+
+            this.apiClient = new RESTFulApiFactoryClient(httpClient);
         }
     }
 }
