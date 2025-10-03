@@ -89,7 +89,7 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             using var doc = System.Text.Json.JsonDocument.Parse(json);
 
             accessToken = doc.RootElement.GetProperty("access_token").GetString();
-            var expiresIn = doc.RootElement.GetProperty("expires_in").GetInt32();
+            var expiresIn = int.Parse(doc.RootElement.GetProperty("expires_in").GetString());
             tokenExpiry = DateTimeOffset.UtcNow.AddSeconds(expiresIn - 30);
 
             return accessToken;
