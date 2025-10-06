@@ -2,10 +2,10 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Hl7.Fhir.Model;
-using ISL.Providers.PDS.FakeFHIR.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FakeFHIR.Models;
 
 namespace ISL.Providers.PDS.FakeFHIR.Mappers
 {
@@ -96,7 +96,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                 {
                     new ContactPoint(
                         system: ContactPoint.ContactPointSystem.Phone,
-                        use: ContactPoint.ContactPointUse.Home,
+                        use: ContactPoint.ContactPointUse.Mobile,
                         value: pdsPatientDetails.PhoneNumber)
                     {
                         ElementId = "789",
