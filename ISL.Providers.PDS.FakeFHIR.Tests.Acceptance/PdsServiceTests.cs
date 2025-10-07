@@ -2,14 +2,15 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Mappers;
 using ISL.Providers.PDS.FakeFHIR.Models;
 using ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
 {
@@ -59,8 +60,8 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
             List<FakeFHIRProviderPatientDetails> patientDetailsList,
             string surname)
         {
-            var patientDetails = patientDetailsList
-                .Where(patientDetails => patientDetails.Surname.Contains(surname)).FirstOrDefault();
+            var patientDetails = patientDetailsList.Where(patientDetails =>
+                    patientDetails.Surname.Contains(surname, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
 
             PdsPatientDetails pdsPatientDetails = GetPdsPatientDetailsFromFakeFHIRPatient(patientDetails);
             Patient patient = PatientMapper.FromPdsPatientDetails(pdsPatientDetails);

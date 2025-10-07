@@ -123,17 +123,22 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             if (!string.IsNullOrWhiteSpace(givenName))
             {
                 patients = patients.Where(patient =>
-                    patient.GivenNames.Any(name => name.ToLower().Contains(givenName.ToLower())));
+                    patient.GivenNames != null &&
+                    patient.GivenNames.Any(name =>
+                        !string.IsNullOrEmpty(name) &&
+                        name.Contains(givenName, StringComparison.OrdinalIgnoreCase)));
             }
 
             if (!string.IsNullOrWhiteSpace(familyName))
             {
-                patients = patients.Where(patient => patient.Surname.ToLower().Contains(familyName.ToLower()));
+                patients = patients.Where(patient =>
+                    patient.Surname.Contains(familyName, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(postcode))
             {
-                patients = patients.Where(patient => patient.Address.ToLower().Contains(postcode.ToLower()));
+                patients = patients.Where(patient =>
+                    patient.Address.Contains(postcode, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(dateOfBirth))
@@ -149,12 +154,13 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
             if (!string.IsNullOrWhiteSpace(registeredGpPractice))
             {
                 patients = patients.Where(patient =>
-                    patient.RegisteredGpPractice.ToLower().Contains(registeredGpPractice.ToLower()));
+                    patient.RegisteredGpPractice.Contains(registeredGpPractice, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(email))
             {
-                patients = patients.Where(patient => patient.EmailAddress.ToLower().Contains(email.ToLower()));
+                patients = patients.Where(patient =>
+                    patient.EmailAddress.Contains(email, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(phoneNumber))

@@ -74,7 +74,6 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     message: "PDS validation error occurred, please fix the errors and try again.",
                     innerException: patientNotFoundException);
 
-
             this.pdsFHIRBrokerMock.Setup(broker =>
                 broker.GetNhsNumberAsync(inputPath))
                     .Throws(serviceException);

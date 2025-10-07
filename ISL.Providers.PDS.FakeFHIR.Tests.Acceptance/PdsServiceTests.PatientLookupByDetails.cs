@@ -2,13 +2,13 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Force.DeepCloner;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FakeFHIR.Models;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
 {
@@ -21,7 +21,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Tests.Acceptance
             var fakePatients = this.configuration
                 .GetSection("fakeFHIRProviderConfigurations:FakePatients").Get<List<FakeFHIRProviderPatientDetails>>();
 
-            string randomString = "Smith";
+            string randomString = "smith";
             string inputSurname = randomString.DeepClone();
 
             PatientBundle randomPatientBundle = CreatePatientBundle(fakePatients, inputSurname);
