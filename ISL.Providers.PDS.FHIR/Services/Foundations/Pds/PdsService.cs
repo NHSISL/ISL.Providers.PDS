@@ -11,6 +11,7 @@ using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
 using ISL.Providers.PDS.FHIR.Mappers;
 using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
+using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
 
 namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
 {
@@ -50,6 +51,11 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
 
                 Bundle bundle = await pdsFHIRBroker.GetPdsPatientDetailsAsync(searchPath);
                 PatientBundle patientBundle = PatientBundleMapper.FromBundle(bundle);
+
+                if (patientBundle.Patients.Count == 0)
+                {
+                    throw new NoMatchingPatientsException("No patients found matching the search criteria.");
+                }
 
                 return patientBundle;
             });

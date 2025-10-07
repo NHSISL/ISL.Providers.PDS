@@ -56,5 +56,46 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 
             this.pdsFHIRBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowValidationExceptionOnPatientLookupByNhsNumberAndLogItAsync()
+        {
+            // given
+            string someIdentifierString = GenerateValidNhsNumber();
+            string inputPath = GetPathFromRandomStringForNhsSearch(someIdentifierString);
+            var serviceException = new Exception("Response status code does not indicate success: 404 (Not Found).");
+
+            var patientNotFoundException =
+                new PatientNotFoundException(
+                    message: "Patient not found.");
+
+            var expectedPdsValidationException =
+                new PdsValidationException(
+                    message: "PDS validation error occurred, please fix the errors and try again.",
+                    innerException: patientNotFoundException);
+
+
+            this.pdsFHIRBrokerMock.Setup(broker =>
+                broker.GetNhsNumberAsync(inputPath))
+                    .Throws(serviceException);
+
+            // when
+            ValueTask<Patient> lookupByDetailsTask =
+                this.pdsService.PatientLookupByNhsNumberAsync(someIdentifierString);
+
+            PdsValidationException actualPdsValidationException =
+                await Assert.ThrowsAsync<PdsValidationException>(
+                    testCode: lookupByDetailsTask.AsTask);
+
+            // then
+            actualPdsValidationException.Should().BeEquivalentTo(
+                expectedPdsValidationException);
+
+            this.pdsFHIRBrokerMock.Verify(broker =>
+                broker.GetNhsNumberAsync(inputPath),
+                    Times.Once());
+
+            this.pdsFHIRBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
