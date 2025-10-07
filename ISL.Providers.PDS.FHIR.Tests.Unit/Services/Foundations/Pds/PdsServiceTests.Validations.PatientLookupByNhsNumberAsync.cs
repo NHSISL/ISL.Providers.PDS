@@ -2,11 +2,11 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Hl7.Fhir.Model;
-using FluentAssertions;
-using Task = System.Threading.Tasks.Task;
-using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -17,6 +17,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
         [InlineData("")]
         [InlineData("   ")]
         [InlineData("1234")]
+        [InlineData("0000000001")]
         public async Task ShouldThrowValidationExceptionOnPatientLookupByNhsNumberAsync(string invalidNhsNumber)
         {
             // given
@@ -25,7 +26,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 
             invalidArgumentPdsException.AddData(
                 key: "nhsNumber",
-                values: "Text must be exactly 10 digits.");
+                values: "Text must be a valid NHS Number.");
 
             var expectedPdsValidationException =
                 new PdsValidationException(

@@ -2,13 +2,13 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Hl7.Fhir.Model;
-using FluentAssertions;
-using Task = System.Threading.Tasks.Task;
-using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
-using System.Threading.Tasks;
-using Moq;
 using System;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
+using Moq;
+using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -19,7 +19,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
         {
             // given
             var serviceException = new Exception();
-            string someIdentifierString = GenerateRandom10DigitNumber();
+            string someIdentifierString = GenerateValidNhsNumber();
             string inputPath = GetPathFromRandomStringForNhsSearch(someIdentifierString);
 
             var failedServicePdsException =
