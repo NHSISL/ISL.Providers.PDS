@@ -26,10 +26,6 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             {
                 throw await CreateAndLogValidationExceptionAsync(invalidArgumentPdsException);
             }
-            catch (NoMatchingPatientsException noMatchingPatientsException)
-            {
-                throw await CreateAndLogValidationExceptionAsync(noMatchingPatientsException);
-            }
             catch (Exception exception)
             {
                 var failedPdsServiceException =
