@@ -2,16 +2,35 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.FakeFHIR.Models;
+using Tynamix.ObjectFiller;
 
-namespace ISL.Providers.PDS.FakeFHIR.Mappers
+namespace ISL.Providers.PDS.FakeFHIR.Tests.Unit.Mappers
 {
-    public static class PatientMapper
+    public partial class PatientMapperTests
     {
-        internal static Patient FromPdsPatientDetails(PdsPatientDetails pdsPatientDetails)
+        private static PdsPatientDetails CreateRandomPdsPatientDetails()
+        {
+            return CreatePdsPatientDetailsFiller()
+                .Create();
+        }
+
+        private static Filler<PdsPatientDetails> CreatePdsPatientDetailsFiller()
+        {
+            DateTimeOffset dateTimeOffset = DateTimeOffset.UtcNow;
+            var filler = new Filler<PdsPatientDetails>();
+
+            filler.Setup()
+                .OnType<DateTimeOffset>().Use(dateTimeOffset);
+
+            return filler;
+        }
+
+        private static Patient GetFhirPatient(PdsPatientDetails pdsPatientDetails)
         {
             var periodStartFhirDateTime = new FhirDateTime(pdsPatientDetails.DateOfBirth);
             var periodEndFhirDateTime = new FhirDateTime(pdsPatientDetails.DateOfDeath);
@@ -143,8 +162,30 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
                         Period = new Period(periodStartFhirDateTime, periodEndFhirDateTime),
                         Extension = new List<Extension>
                         {
-                            CreateAddressKeyExtension("PAF", "12345678"),
-                            CreateAddressKeyExtension("UPRN", "123456789012")
+                            new Extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
+                                new FhirString("12345678"))
+                                {
+                                    Extension = new List<Extension>
+                                        {
+                                            new Extension("type", new Coding(
+                                                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
+                                                code: "PAF")),
+
+                                            new Extension("value", new FhirString("12345678"))
+                                        }
+                                },
+                            new Extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
+                                new FhirString("123456789012"))
+                                {
+                                    Extension = new List<Extension>
+                                        {
+                                            new Extension("type", new Coding(
+                                                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
+                                                code: "UPRN")),
+
+                                            new Extension("value", new FhirString("123456789012"))
+                                        }
+                                }
                         }
                     }
                 },
@@ -214,22 +255,6 @@ namespace ISL.Providers.PDS.FakeFHIR.Mappers
             };
 
             return patient;
-        }
-
-        private static Extension CreateAddressKeyExtension(string typeCode, string valueString)
-        {
-            return new Extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-AddressKey",
-                new FhirString(valueString))
-            {
-                Extension = new List<Extension>
-                    {
-                        new Extension("type", new Coding(
-                            system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-AddressKeyType",
-                            code: typeCode)),
-
-                        new Extension("value", new FhirString(valueString))
-                    }
-            };
         }
     }
 }

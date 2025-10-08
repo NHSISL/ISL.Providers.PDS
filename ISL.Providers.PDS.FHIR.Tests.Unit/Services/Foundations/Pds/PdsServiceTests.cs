@@ -2,16 +2,16 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
+using ISL.Providers.PDS.FHIR.Mappers;
 using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 using ISL.Providers.PDS.FHIR.Services.Foundations.Pds;
 using Moq;
-using System;
 using Tynamix.ObjectFiller;
-using ISL.Providers.PDS.Abstractions.Models;
-using Hl7.Fhir.Model;
-using System.Collections.Generic;
-using ISL.Providers.PDS.FHIR.Mappers;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
 {
@@ -48,12 +48,48 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
         private string GetPathFromRandomStringForNhsSearch(string randomString) =>
             $"{pdsFHIRConfigurations.PatientLookupPath}/{randomString}";
 
-        private static string GenerateRandom10DigitNumber()
+        private static string GenerateValidNhsNumber()
         {
-            Random random = new Random();
-            var randomNumber = random.Next(1000000000, 2000000000).ToString();
+            int total = 10;
+            string formattedNhsNumber = string.Empty;
 
-            return randomNumber;
+            while (total == 10)
+            {
+                var randomNumber = new LongRange(100000000, 999999999);
+                formattedNhsNumber = randomNumber.GetValue().ToString();
+                int[] multiplers = new int[] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+                int currentNumber;
+                int currentSum = 0;
+                int currentMultipler;
+                string currentString;
+                int remainder;
+
+                for (int i = 0; i <= 8; i++)
+                {
+                    currentString = formattedNhsNumber.Substring(i, 1);
+
+                    currentNumber = Convert.ToInt16(currentString);
+                    currentMultipler = multiplers[i];
+                    currentSum = currentSum + (currentNumber * currentMultipler);
+                }
+
+                remainder = currentSum % 11;
+                total = 11 - remainder;
+
+                if (total.Equals(11))
+                {
+                    total = 0;
+                }
+
+                if (total != 10)
+                {
+                    break;
+                }
+            }
+
+            string checkNumber = total.ToString();
+
+            return $"{formattedNhsNumber}{checkNumber}";
         }
 
         private static Patient CreateRandomPatient(string surname)
@@ -125,7 +161,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
                     Resource = patient
                 }
             };
-          
+
 
             return bundle;
         }

@@ -2,10 +2,10 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Moq;
+using FluentAssertions;
 using Force.DeepCloner;
 using Hl7.Fhir.Model;
-using FluentAssertions;
+using Moq;
 using Task = System.Threading.Tasks.Task;
 
 namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
@@ -16,7 +16,7 @@ namespace ISL.Providers.PDS.FHIR.Tests.Unit.Services.Foundations.Pds
         public async Task ShouldPatientLookupByNhsNumberAsync()
         {
             // Given
-            string randomIdentifier = GenerateRandom10DigitNumber();
+            string randomIdentifier = GenerateValidNhsNumber();
             string inputNhsNumber = randomIdentifier.DeepClone();
             string inputPath = GetPathFromRandomStringForNhsSearch(inputNhsNumber);
 

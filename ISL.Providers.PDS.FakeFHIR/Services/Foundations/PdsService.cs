@@ -2,14 +2,14 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Hl7.Fhir.Model;
-using ISL.Providers.PDS.Abstractions.Models;
-using ISL.Providers.PDS.FakeFHIR.Mappers;
-using ISL.Providers.PDS.FakeFHIR.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.FakeFHIR.Mappers;
+using ISL.Providers.PDS.FakeFHIR.Models;
 
 namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 {
@@ -19,7 +19,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 
         public PdsService(
             FakeFHIRProviderConfigurations fakeFHIRProviderConfiguration)
-        { 
+        {
             this.fakeFHIRProviderConfiguration = fakeFHIRProviderConfiguration;
         }
 
@@ -68,7 +68,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 
                 List<PdsPatientDetails> fakePatientDetails = GetFakePatientDetails();
 
-                PdsPatientDetails pdsPatientDetails = 
+                PdsPatientDetails pdsPatientDetails =
                     fakePatientDetails.Where(patient => patient.NhsNumber == nhsNumber).FirstOrDefault();
 
                 ValidatePdsPatientDetails(pdsPatientDetails, nhsNumber);
@@ -122,17 +122,23 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 
             if (!string.IsNullOrWhiteSpace(givenName))
             {
-                patients = patients.Where(patient => patient.GivenNames.Contains(givenName));
+                patients = patients.Where(patient =>
+                    patient.GivenNames != null &&
+                    patient.GivenNames.Any(name =>
+                        !string.IsNullOrEmpty(name) &&
+                        name.Contains(givenName, StringComparison.OrdinalIgnoreCase)));
             }
 
             if (!string.IsNullOrWhiteSpace(familyName))
             {
-                patients = patients.Where(patient => patient.Surname.Contains(familyName));
+                patients = patients.Where(patient =>
+                    patient.Surname.Contains(familyName, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(postcode))
             {
-                patients = patients.Where(patient => patient.Address.Contains(postcode));
+                patients = patients.Where(patient =>
+                    patient.Address.Contains(postcode, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(dateOfBirth))
@@ -147,12 +153,14 @@ namespace ISL.Providers.PDS.FakeFHIR.Services.Foundations
 
             if (!string.IsNullOrWhiteSpace(registeredGpPractice))
             {
-                patients = patients.Where(patient => patient.RegisteredGpPractice.Contains(registeredGpPractice));
+                patients = patients.Where(patient =>
+                    patient.RegisteredGpPractice.Contains(registeredGpPractice, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(email))
             {
-                patients = patients.Where(patient => patient.EmailAddress.Contains(email));
+                patients = patients.Where(patient =>
+                    patient.EmailAddress.Contains(email, StringComparison.OrdinalIgnoreCase));
             }
 
             if (!string.IsNullOrWhiteSpace(phoneNumber))

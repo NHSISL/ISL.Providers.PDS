@@ -2,11 +2,11 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
+using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
-using System;
-using System.Threading.Tasks;
 using Xeptions;
 
 namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
@@ -47,6 +47,14 @@ namespace ISL.Providers.PDS.FHIR.Services.Foundations.Pds
             catch (InvalidPdsArgumentException invalidArgumentPdsException)
             {
                 throw await CreateAndLogValidationExceptionAsync(invalidArgumentPdsException);
+            }
+            catch (Exception exception)
+                when (exception.Message == "Response status code does not indicate success: 404 (Not Found).")
+            {
+                var patientNotFoundException =
+                    new PatientNotFoundException("Patient not found.");
+
+                throw await CreateAndLogValidationExceptionAsync(patientNotFoundException);
             }
             catch (Exception exception)
             {
