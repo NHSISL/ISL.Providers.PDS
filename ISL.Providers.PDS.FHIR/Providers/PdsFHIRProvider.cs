@@ -2,17 +2,17 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using ISL.Providers.PDS.Abstractions.Models;
-using ISL.Providers.PDS.FHIR.Services.Foundations.Pds;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using System;
-using Xeptions;
+using System.Threading.Tasks;
+using Hl7.Fhir.Model;
+using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
+using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
 using ISL.Providers.PDS.FHIR.Models.Providers.Exceptions;
 using ISL.Providers.PDS.FHIR.Models.Services.Foundations.Pds.Exceptions;
-using ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker;
-using Hl7.Fhir.Model;
-using ISL.Providers.PDS.FHIR.Models.Brokers.PdsFHIR;
+using ISL.Providers.PDS.FHIR.Services.Foundations.Pds;
+using Microsoft.Extensions.DependencyInjection;
+using Xeptions;
 
 namespace ISL.Providers.PDS.FHIR.Providers
 {
@@ -129,7 +129,7 @@ namespace ISL.Providers.PDS.FHIR.Providers
             Xeption innerException)
         {
             return new PdsFHIRProviderValidationException(
-                message: "Pds FHIR provider validation error occurred, fix errors and try again.",
+                message: innerException.Message,
                 innerException,
                 data: innerException.Data);
         }
@@ -138,7 +138,7 @@ namespace ISL.Providers.PDS.FHIR.Providers
             Xeption innerException)
         {
             return new PdsFHIRProviderDependencyValidationException(
-                message: "Pds FHIR provider dependency validation error occurred, fix errors and try again.",
+                message: innerException.Message,
                 innerException,
                 data: innerException.Data);
         }
@@ -147,14 +147,14 @@ namespace ISL.Providers.PDS.FHIR.Providers
             Xeption innerException)
         {
             return new PdsFHIRProviderDependencyException(
-                message: "Pds FHIR provider dependency error occurred, contact support.",
+                message: innerException.Message,
                 innerException);
         }
 
         private static PdsFHIRProviderServiceException CreateProviderServiceException(Xeption innerException)
         {
             return new PdsFHIRProviderServiceException(
-                message: "Pds FHIR provider service error occurred, contact support.",
+                message: innerException.Message,
                 innerException);
         }
 

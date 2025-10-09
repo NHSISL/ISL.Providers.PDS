@@ -2,16 +2,16 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using System;
-using Xeptions;
-using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
+using System.Threading.Tasks;
+using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
+using ISL.Providers.PDS.FakeFHIR.Models;
 using ISL.Providers.PDS.FakeFHIR.Models.Foundations.Pds.Exceptions;
 using ISL.Providers.PDS.FakeFHIR.Models.Providers.Exceptions;
-using Hl7.Fhir.Model;
-using ISL.Providers.PDS.FakeFHIR.Models;
+using ISL.Providers.PDS.FakeFHIR.Services.Foundations;
+using Microsoft.Extensions.DependencyInjection;
+using Xeptions;
 
 namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
 {
@@ -123,7 +123,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
             Xeption innerException)
         {
             return new FakeFHIRProviderValidationException(
-                message: "Fake FHIR provider validation error occurred, fix errors and try again.",
+                message: innerException.Message,
                 innerException,
                 data: innerException.Data);
         }
@@ -132,7 +132,7 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
             Xeption innerException)
         {
             return new FakeFHIRProviderDependencyValidationException(
-                message: "Fake FHIR provider dependency validation error occurred, fix errors and try again.",
+                message: innerException.Message,
                 innerException,
                 data: innerException.Data);
         }
@@ -141,14 +141,14 @@ namespace ISL.Providers.PDS.FakeFHIR.Providers.FakeFHIR
             Xeption innerException)
         {
             return new FakeFHIRProviderDependencyException(
-                message: "Fake FHIR provider dependency error occurred, contact support.",
+                message: innerException.Message,
                 innerException);
         }
 
         private static FakeFHIRProviderServiceException CreateProviderServiceException(Xeption innerException)
         {
             return new FakeFHIRProviderServiceException(
-                message: "Fake FHIR provider service error occurred, contact support.",
+                message: innerException.Message,
                 innerException);
         }
 
