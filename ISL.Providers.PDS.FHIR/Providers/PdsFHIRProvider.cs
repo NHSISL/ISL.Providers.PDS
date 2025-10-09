@@ -148,14 +148,16 @@ namespace ISL.Providers.PDS.FHIR.Providers
         {
             return new PdsFHIRProviderDependencyException(
                 message: innerException.Message,
-                innerException);
+                innerException,
+                data: innerException.Data);
         }
 
         private static PdsFHIRProviderServiceException CreateProviderServiceException(Xeption innerException)
         {
             return new PdsFHIRProviderServiceException(
                 message: innerException.Message,
-                innerException);
+                innerException,
+                data: innerException.Data);
         }
 
         private void InitializeClients(IServiceProvider serviceProvider) =>

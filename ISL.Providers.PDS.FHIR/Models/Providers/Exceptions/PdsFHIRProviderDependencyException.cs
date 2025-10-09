@@ -2,6 +2,7 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System.Collections;
 using ISL.Providers.PDS.Abstractions.Models.Exceptions;
 using Xeptions;
 
@@ -14,8 +15,8 @@ namespace ISL.Providers.PDS.FHIR.Models.Providers.Exceptions
     public class PdsFHIRProviderDependencyException
         : Xeption, IPdsProviderDependencyException
     {
-        public PdsFHIRProviderDependencyException(string message, Xeption innerException)
-            : base(message, innerException)
+        public PdsFHIRProviderDependencyException(string message, Xeption innerException, IDictionary data)
+            : base(message, innerException, data)
         { }
     }
 }
