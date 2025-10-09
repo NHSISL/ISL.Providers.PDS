@@ -2,12 +2,12 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System.Threading.Tasks;
 using FluentAssertions;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.Abstractions.Models.Exceptions;
 using ISL.Providers.PDS.Abstractions.Tests.Unit.Models.Exceptions;
 using Moq;
-using System.Threading.Tasks;
 using Xeptions;
 
 namespace ISL.Providers.PDS.Abstractions.Tests.Unit
@@ -28,7 +28,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
 
             PdsProviderValidationException expectedPdsValidationProviderException =
                 new PdsProviderValidationException(
-                    message: "Pds validation errors occurred, please try again.",
+                    message: somePdsValidationException.Message,
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
@@ -38,9 +38,9 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
                     It.IsAny<string>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
-                    It.IsAny<string>(), 
-                    It.IsAny<string>(), 
-                    It.IsAny<string>(), 
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<string>()))
                         .ThrowsAsync(somePdsValidationException);
 
@@ -85,7 +85,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
 
             PdsProviderValidationException expectedPdsValidationProviderException =
                 new PdsProviderValidationException(
-                    message: "Pds validation errors occurred, please try again.",
+                    message: somePdsValidationException.Message,
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
@@ -140,7 +140,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
 
             PdsProviderDependencyException expectedPdsDependencyProviderException =
                 new PdsProviderDependencyException(
-                    message: "Pds dependency error occurred, contact support.",
+                    message: somePdsValidationException.Message,
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
@@ -195,7 +195,7 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
 
             PdsProviderServiceException expectedPdsServiceProviderException =
                 new PdsProviderServiceException(
-                    message: "Pds service error occurred, contact support.",
+                    message: somePdsValidationException.Message,
                     innerException: somePdsValidationException);
 
             this.pdsMock.Setup(provider =>
@@ -243,17 +243,12 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             // given
             var someException = new Xeption();
 
-            var uncatagorizedPdsProviderException =
-                new UncatagorizedPdsProviderException(
-                    message: "Pds provider not properly implemented. Uncatagorized errors found, " +
-                            "contact the pds provider owner for support.",
-                    innerException: someException,
-                    data: someException.Data);
-
             PdsProviderServiceException expectedPdsServiceProviderException =
                 new PdsProviderServiceException(
-                    message: "Uncatagorized pds service error occurred, contact support.",
-                    innerException: uncatagorizedPdsProviderException);
+                    message: "Pds provider not properly implemented. Uncatagorized errors found, " +
+                        "contact the pds provider owner for support.",
+
+                    innerException: someException);
 
             this.pdsMock.Setup(provider =>
                 provider.PatientLookupByDetailsAsync(It.IsAny<string>(),

@@ -2,11 +2,11 @@
 // Copyright (c) North East London ICB. All rights reserved.
 // ---------------------------------------------------------
 
+using System;
+using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using ISL.Providers.PDS.Abstractions.Models;
 using ISL.Providers.PDS.Abstractions.Models.Exceptions;
-using System;
-using System.Threading.Tasks;
 using Xeptions;
 
 namespace ISL.Providers.PDS.Abstractions
@@ -23,32 +23,25 @@ namespace ISL.Providers.PDS.Abstractions
             {
                 return await returningPatientBundleFunction();
             }
-            catch (Xeption ex) when (ex is IPdsProviderValidationException)
+            catch (Xeption exception) when (exception is IPdsProviderValidationException)
             {
-                throw CreateValidationException(ex);
+                throw CreateValidationException(exception);
             }
-            catch (Xeption ex) when (ex is IPdsProviderDependencyValidationException)
+            catch (Xeption exception) when (exception is IPdsProviderDependencyValidationException)
             {
-                throw CreateValidationException(ex);
+                throw CreateValidationException(exception);
             }
-            catch (Xeption ex) when (ex is IPdsProviderDependencyException)
+            catch (Xeption exception) when (exception is IPdsProviderDependencyException)
             {
-                throw CreateDependencyException(ex);
+                throw CreateDependencyException(exception);
             }
-            catch (Xeption ex) when (ex is IPdsProviderServiceException)
+            catch (Xeption exception) when (exception is IPdsProviderServiceException)
             {
-                throw CreateServiceException(ex);
+                throw CreateServiceException(exception);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                var uncatagorizedPdsProviderException =
-                    new UncatagorizedPdsProviderException(
-                        message: "Pds provider not properly implemented. Uncatagorized errors found, " +
-                            "contact the pds provider owner for support.",
-                        innerException: ex,
-                        data: ex.Data);
-
-                throw CreateUncatagorizedServiceException(uncatagorizedPdsProviderException);
+                throw CreateUncatagorizedServiceException(exception);
             }
         }
 
@@ -59,32 +52,25 @@ namespace ISL.Providers.PDS.Abstractions
             {
                 return await returningPatientFunction();
             }
-            catch (Xeption ex) when (ex is IPdsProviderValidationException)
+            catch (Xeption exception) when (exception is IPdsProviderValidationException)
             {
-                throw CreateValidationException(ex);
+                throw CreateValidationException(exception);
             }
-            catch (Xeption ex) when (ex is IPdsProviderDependencyValidationException)
+            catch (Xeption exception) when (exception is IPdsProviderDependencyValidationException)
             {
-                throw CreateValidationException(ex);
+                throw CreateValidationException(exception);
             }
-            catch (Xeption ex) when (ex is IPdsProviderDependencyException)
+            catch (Xeption exception) when (exception is IPdsProviderDependencyException)
             {
-                throw CreateDependencyException(ex);
+                throw CreateDependencyException(exception);
             }
-            catch (Xeption ex) when (ex is IPdsProviderServiceException)
+            catch (Xeption exception) when (exception is IPdsProviderServiceException)
             {
-                throw CreateServiceException(ex);
+                throw CreateServiceException(exception);
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                var uncatagorizedPdsProviderException =
-                    new UncatagorizedPdsProviderException(
-                        message: "Pds provider not properly implemented. Uncatagorized errors found, " +
-                            "contact the pds provider owner for support.",
-                        innerException: ex,
-                        data: ex.Data);
-
-                throw CreateUncatagorizedServiceException(uncatagorizedPdsProviderException);
+                throw CreateUncatagorizedServiceException(exception);
             }
         }
 
@@ -92,7 +78,7 @@ namespace ISL.Providers.PDS.Abstractions
         {
             var pdsProviderValidationException =
                 new PdsProviderValidationException(
-                    message: "Pds validation errors occurred, please try again.",
+                    message: exception.Message,
                     innerException: exception,
                     data: exception.Data);
 
@@ -102,7 +88,7 @@ namespace ISL.Providers.PDS.Abstractions
         private PdsProviderDependencyException CreateDependencyException(Xeption exception)
         {
             var pdsProviderDependencyException = new PdsProviderDependencyException(
-                message: "Pds dependency error occurred, contact support.",
+                message: exception.Message,
                 innerException: exception,
                 data: exception.Data);
 
@@ -112,7 +98,7 @@ namespace ISL.Providers.PDS.Abstractions
         private PdsProviderServiceException CreateServiceException(Xeption exception)
         {
             var pdsProviderServiceException = new PdsProviderServiceException(
-                message: "Pds service error occurred, contact support.",
+                message: exception.Message,
                 innerException: exception,
                 data: exception.Data);
 
@@ -122,7 +108,9 @@ namespace ISL.Providers.PDS.Abstractions
         private PdsProviderServiceException CreateUncatagorizedServiceException(Exception exception)
         {
             var pdsProviderServiceException = new PdsProviderServiceException(
-                message: "Uncatagorized pds service error occurred, contact support.",
+                message: "Pds provider not properly implemented. Uncatagorized errors found, " +
+                    "contact the pds provider owner for support.",
+
                 innerException: exception as Xeption,
                 data: exception.Data);
 
