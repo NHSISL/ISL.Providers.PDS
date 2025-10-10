@@ -20,6 +20,10 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             // given
             var someException = new Xeption();
 
+            someException.AddData(
+                key: "someKey",
+                values: "someValues");
+
             var somePdsValidationException =
                 new SomePdsValidationException(
                     message: "Some pds validation exception occurred",
@@ -29,7 +33,8 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             PdsProviderValidationException expectedPdsValidationProviderException =
                 new PdsProviderValidationException(
                     message: somePdsValidationException.Message,
-                    innerException: somePdsValidationException);
+                    innerException: somePdsValidationException,
+                    data: somePdsValidationException.Data);
 
             this.pdsMock.Setup(provider =>
                 provider.PatientLookupByDetailsAsync(
@@ -77,6 +82,10 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             // given
             var someException = new Xeption();
 
+            someException.AddData(
+                key: "someKey",
+                values: "someValues");
+
             var somePdsValidationException =
                 new SomePdsDependencyValidationException(
                     message: "Some pds dependency validation exception occurred",
@@ -86,7 +95,8 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             PdsProviderValidationException expectedPdsValidationProviderException =
                 new PdsProviderValidationException(
                     message: somePdsValidationException.Message,
-                    innerException: somePdsValidationException);
+                    innerException: somePdsValidationException,
+                    data: somePdsValidationException.Data);
 
             this.pdsMock.Setup(provider =>
                 provider.PatientLookupByDetailsAsync(It.IsAny<string>(),
@@ -133,15 +143,21 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             // given
             var someException = new Xeption();
 
+            someException.AddData(
+                key: "someKey",
+                values: "someValues");
+
             var somePdsValidationException =
                 new SomePdsDependencyException(
                     message: "Some pds dependency exception occurred",
-                    innerException: someException);
+                    innerException: someException,
+                    data: someException.Data);
 
             PdsProviderDependencyException expectedPdsDependencyProviderException =
                 new PdsProviderDependencyException(
                     message: somePdsValidationException.Message,
-                    innerException: somePdsValidationException);
+                    innerException: somePdsValidationException,
+                    data: somePdsValidationException.Data);
 
             this.pdsMock.Setup(provider =>
                 provider.PatientLookupByDetailsAsync(It.IsAny<string>(),
@@ -188,15 +204,21 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             // given
             var someException = new Xeption();
 
+            someException.AddData(
+                key: "someKey",
+                values: "someValues");
+
             var somePdsValidationException =
                 new SomePdsServiceException(
                     message: "Some pds service exception occurred",
-                    innerException: someException);
+                    innerException: someException,
+                    data: someException.Data);
 
             PdsProviderServiceException expectedPdsServiceProviderException =
                 new PdsProviderServiceException(
                     message: somePdsValidationException.Message,
-                    innerException: somePdsValidationException);
+                    innerException: somePdsValidationException,
+                    data: somePdsValidationException.Data);
 
             this.pdsMock.Setup(provider =>
                 provider.PatientLookupByDetailsAsync(It.IsAny<string>(),
@@ -243,12 +265,17 @@ namespace ISL.Providers.PDS.Abstractions.Tests.Unit
             // given
             var someException = new Xeption();
 
+            someException.AddData(
+                key: "someKey",
+                values: "someValues");
+
             PdsProviderServiceException expectedPdsServiceProviderException =
                 new PdsProviderServiceException(
                     message: "Pds provider not properly implemented. Uncatagorized errors found, " +
                         "contact the pds provider owner for support.",
 
-                    innerException: someException);
+                    innerException: someException,
+                    data: someException.Data);
 
             this.pdsMock.Setup(provider =>
                 provider.PatientLookupByDetailsAsync(It.IsAny<string>(),
