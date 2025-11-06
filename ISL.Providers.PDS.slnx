@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Abstraction Provider/">
+    <Project Path="ISL.Providers.PDS.Abstractions.Tests.Acceptance/ISL.Providers.PDS.Abstractions.Tests.Acceptance.csproj" />
+    <Project Path="ISL.Providers.PDS.Abstractions.Tests.Unit/ISL.Providers.PDS.Abstractions.Tests.Unit.csproj" />
+    <Project Path="ISL.Providers.PDS.Abstractions/ISL.Providers.PDS.Abstractions.csproj" />
+  </Folder>
+  <Folder Name="/Providers/" />
+  <Folder Name="/Providers/FAKE-FHIR/">
+    <Project Path="ISL.Providers.PDS.FakeFHIR.Tests.Acceptance/ISL.Providers.PDS.FakeFHIR.Tests.Acceptance.csproj" />
+    <Project Path="ISL.Providers.PDS.FakeFHIR.Tests.Integration/ISL.Providers.PDS.FakeFHIR.Tests.Integration.csproj" />
+    <Project Path="ISL.Providers.PDS.FakeFHIR.Tests.Unit/ISL.Providers.PDS.FakeFHIR.Tests.Unit.csproj" />
+    <Project Path="ISL.Providers.PDS.FakeFHIR/ISL.Providers.PDS.FakeFHIR.csproj" />
+  </Folder>
+  <Folder Name="/Providers/PDS-FHIR/">
+    <Project Path="ISL.Providers.PDS.FHIR.Tests.Acceptance/ISL.Providers.PDS.FHIR.Tests.Acceptance.csproj" />
+    <Project Path="ISL.Providers.PDS.FHIR.Tests.Integration/ISL.Providers.PDS.FHIR.Tests.Integration.csproj" />
+    <Project Path="ISL.Providers.PDS.FHIR.Tests.Unit/ISL.Providers.PDS.FHIR.Tests.Unit.csproj" />
+    <Project Path="ISL.Providers.PDS.FHIR/ISL.Providers.PDS.FHIR.csproj" />
+  </Folder>
+  <Project Path="ISL.Providers.PDS.Infrastructure/ISL.Providers.PDS.Infrastructure.csproj" />
+</Solution>
