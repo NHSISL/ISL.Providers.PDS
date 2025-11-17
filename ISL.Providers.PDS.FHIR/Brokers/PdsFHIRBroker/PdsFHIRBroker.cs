@@ -35,7 +35,6 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 
         public async ValueTask<Patient> GetNhsNumberAsync(string path)
         {
-            await EnsureAccessTokenAsync();
             string requestUri = $"{pdsFHIRConfiguration.ApiUrl}{path}";
             string jsonResponse = await GetAsync<string>(requestUri);
             var parser = new FhirJsonParser();
@@ -58,7 +57,7 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
         {
             if (apiClient is null || DateTimeOffset.UtcNow >= tokenExpiry)
             {
-                await SetupApiClient();
+                await EnsureAccessTokenAsync().ConfigureAwait(false);
             }
 
             if (apiClient is null)
