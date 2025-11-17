@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using Hl7.Fhir.Model;
 using Hl7.Fhir.Serialization;
@@ -20,9 +21,11 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
     internal class PdsFHIRBroker : IPdsFHIRBroker
     {
         private readonly PdsFHIRConfigurations pdsFHIRConfiguration;
+        private readonly SemaphoreSlim tokenGate = new(1, 1);
         private IRESTFulApiFactoryClient? apiClient = null;
         private string accessToken = string.Empty;
         private DateTimeOffset tokenExpiry = DateTimeOffset.MinValue;
+        private bool disposed;
 
         public PdsFHIRBroker(PdsFHIRConfigurations pdsFHIRConfiguration)
         {
@@ -32,6 +35,7 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 
         public async ValueTask<Patient> GetNhsNumberAsync(string path)
         {
+            await EnsureAccessTokenAsync();
             string requestUri = $"{pdsFHIRConfiguration.ApiUrl}{path}";
             string jsonResponse = await GetAsync<string>(requestUri);
             var parser = new FhirJsonParser();
@@ -72,7 +76,31 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
             }
         }
 
-        private async ValueTask GetAccessTokenAsync()
+        private async ValueTask EnsureAccessTokenAsync(CancellationToken cancellationToken = default)
+        {
+            if (!string.IsNullOrEmpty(this.accessToken)
+                && DateTimeOffset.UtcNow < this.tokenExpiry)
+            {
+                return;
+            }
+
+            await this.tokenGate.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
+            {
+                if (string.IsNullOrEmpty(this.accessToken)
+                    || DateTimeOffset.UtcNow >= this.tokenExpiry)
+                {
+                    await SetupApiClient();
+                }
+            }
+            finally
+            {
+                this.tokenGate.Release();
+            }
+        }
+
+        private async ValueTask GetAccessTokenAsync(CancellationToken cancellationToken = default)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -80,15 +108,17 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
 
                 var content = new FormUrlEncodedContent(new[]
                 {
-                new KeyValuePair<string, string>("grant_type", "client_credentials"),
-
-                new KeyValuePair<string, string>("client_assertion_type",
-                    "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
-
-                new KeyValuePair<string, string>("client_assertion", assertion)
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_assertion_type",
+                        "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"),
+                    new KeyValuePair<string, string>("client_assertion", assertion)
                 });
 
-                var response = await httpClient.PostAsync(pdsFHIRConfiguration.AuthorisationUrl, content);
+                var response = await httpClient.PostAsync(
+                    pdsFHIRConfiguration.AuthorisationUrl,
+                    content,
+                    cancellationToken);
+
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 using var doc = System.Text.Json.JsonDocument.Parse(json);
@@ -143,6 +173,17 @@ namespace ISL.Providers.PDS.FHIR.Brokers.PdsFHIRBroker
                     parameter: this.accessToken ?? "");
 
             this.apiClient = new RESTFulApiFactoryClient(httpClient);
+        }
+
+        public void Dispose()
+        {
+            if (disposed)
+            {
+                return;
+            }
+
+            disposed = true;
+            tokenGate.Dispose();
         }
     }
 }
